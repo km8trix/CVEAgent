@@ -12,17 +12,30 @@ source (OSV / NVD / GHSA), severity is grounded in real exploit signal (EPSS + C
 and a dedicated Verifier agent rejects any unsupported or version-mismatched claim before the
 report is returned.
 
+> The GitHub repo is named **CVEAgent**; **Palisade** is the product/package name used
+> throughout the code and docs.
+
 ## Status
 
-🚧 Early development — planning phase.
+🚧 Early development. PR #1 (scaffold) is the first slice of Milestone M1.
 
 - **Project spec:** [`docs/palisade-project-spec.md`](docs/palisade-project-spec.md)
 - **Implementation plan:** [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md)
 
-## What's here now
+## Local development
 
-Just the spec and the derived implementation plan. Nothing is built yet — see the plan for
-the phased milestone breakdown and the "first 10 PRs" backlog.
+Requires [uv](https://docs.astral.sh/uv/) and Docker.
+
+```bash
+make install     # create .venv and install deps (uv provisions Python 3.12)
+make up-db       # start Postgres + pgvector
+make run         # run the API with reload -> http://localhost:8000/health
+make test        # pytest
+make lint        # ruff + mypy
+```
+
+`make up` runs the full stack (Postgres + API) in Docker. Copy `.env.example` to `.env`
+for local config; the real `.env` is gitignored.
 
 ## Stack (planned)
 
