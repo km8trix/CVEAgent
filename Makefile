@@ -16,7 +16,7 @@ down:
 	docker compose down
 
 migrate:
-	@echo "no migrations yet (added in PR #2)"
+	uv run alembic upgrade head
 
 test:
 	uv run pytest -q
