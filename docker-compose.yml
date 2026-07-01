@@ -1,0 +1,33 @@
+services:
+  db:
+    image: pgvector/pgvector:0.8.1-pg16
+    environment:
+      POSTGRES_USER: palisade
+      POSTGRES_PASSWORD: palisade
+      POSTGRES_DB: palisade
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/init-pgvector.sql:/docker-entrypoint-initdb.d/init-pgvector.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U palisade"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  api:
+    build: .
+    command: uvicorn palisade.main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      DATABASE_URL: postgresql+psycopg://palisade:palisade@db:5432/palisade
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+
+volumes:
+  pgdata:
