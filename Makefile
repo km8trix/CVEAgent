@@ -1,10 +1,13 @@
-.PHONY: install run up up-db down migrate test lint fmt
+.PHONY: install run worker up up-db down migrate test lint fmt
 
 install:
 	uv sync --extra dev
 
 run:
 	uv run uvicorn palisade.main:app --reload
+
+worker:
+	uv run python -m palisade.worker
 
 up:
 	docker compose up -d

@@ -81,7 +81,7 @@ Tasks:
 **Exit:** GitHub App comments on a real PR; CI eval-regression gate blocks quality drops.
 
 Tasks:
-- [ ] Async scan queue (pg-backed worker) so scans don't block the API.
+- [x] Async scan queue (pg-backed worker) so scans don't block the API.
 - [ ] Langfuse tracing; cost + p95 latency captured per scan; prompt versioning.
 - [x] CI eval-regression gate (`.github/workflows/eval-gate.yml`) on PRs touching prompts/retrieval/matching.
 - [ ] GitHub App / webhook PR-scan mode → posts a comment with the ranked cited report.

@@ -1,7 +1,5 @@
-"""ORM tables for the advisory corpus and its embeddings.
+"""ORM tables for the advisory corpus, its embeddings, and the M3 scan queue.
 
-Scans/findings tables are deferred to M2, built with the scan pipeline that
-populates them (their shape follows the still-evolving Finding model).
 See IMPLEMENTATION_PLAN.md section 4.
 """
 
@@ -9,7 +7,7 @@ from datetime import datetime
 from typing import Any
 
 from pgvector.sqlalchemy import Vector
-from sqlalchemy import DateTime, ForeignKey, Index, String, Text
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Index, String, Text, func, text
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -48,3 +46,33 @@ class AdvisoryEmbedding(Base):
     chunk_index: Mapped[int] = mapped_column(primary_key=True, default=0)
     content: Mapped[str] = mapped_column(Text)
     embedding: Mapped[list[float]] = mapped_column(Vector(EMBEDDING_DIM))
+
+
+class Scan(Base):
+    """M3 async scan queue: one row per submitted scan. The worker claims pending
+    rows with SELECT ... FOR UPDATE SKIP LOCKED, runs the pipeline, and writes the
+    ScanReport into ``result``.
+
+    # ponytail: ``result`` is a JSONB blob of the whole ScanReport, not a normalized
+    # findings schema — normalize only if we ever need to query findings in SQL.
+    """
+
+    __tablename__ = "scans"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    status: Mapped[str] = mapped_column(String(16), nullable=False, server_default="pending")
+    engine: Mapped[str] = mapped_column(String(8), nullable=False, server_default="scan")
+    filename: Mapped[str] = mapped_column(Text, nullable=False)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    result: Mapped[dict[str, Any] | None] = mapped_column(JSONB, nullable=True)
+    error: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    claimed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    __table_args__ = (
+        # Partial index keeps the FIFO claim scan cheap as done/error rows accumulate.
+        Index("ix_scans_pending", "created_at", postgresql_where=text("status = 'pending'")),
+        # A done scan must carry its report — the read path relies on this invariant.
+        CheckConstraint("status <> 'done' OR result IS NOT NULL", name="ck_scans_done_has_result"),
+    )
