@@ -1,10 +1,11 @@
-name: eval
+name: eval-gate
 
 on:
   pull_request:
     paths:
       - "src/palisade/matching/**"
       - "src/palisade/enrichment/**"
+      - "src/palisade/agents/**"
       - "src/palisade/scanner.py"
       - "src/palisade/ingestion/normalize.py"
       - "evals/**"
@@ -13,7 +14,7 @@ permissions:
   contents: read
 
 jobs:
-  eval:
+  eval-gate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,10 +22,12 @@ jobs:
         with:
           python-version: "3.12"
       - run: uv sync --frozen --extra dev
-      # Non-blocking for now; add `--gate` to enforce _THRESHOLDS once the golden set grows.
-      - name: Run golden eval
-        run: uv run python -m evals.run_eval
+      # Blocking regression gate: --gate exits non-zero if any metric drops below
+      # evals/run_eval._THRESHOLDS (or the Verifier falsely rejects a real finding).
+      - name: Run golden eval (gated)
+        run: uv run python -m evals.run_eval --gate
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: eval-metrics
           path: evals/metrics.json
