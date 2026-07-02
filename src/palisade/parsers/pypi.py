@@ -14,7 +14,7 @@ from palisade.models.dependency import Dependency, Lockfile
 _PINNED = re.compile(r"^([A-Za-z0-9._-]+)(?:\[[^\]]*\])?\s*==\s*([^\s;#]+)")
 
 
-def _normalize_name(name: str) -> str:
+def normalize_name(name: str) -> str:
     """PEP 503 normalization."""
     return re.sub(r"[-_.]+", "-", name).lower()
 
@@ -31,7 +31,7 @@ def parse_requirements(lockfile: Lockfile) -> list[Dependency]:
         out.append(
             Dependency(
                 ecosystem="PyPI",
-                name=_normalize_name(match.group(1)),
+                name=normalize_name(match.group(1)),
                 version=match.group(2),
                 direct=True,
                 source_file=lockfile.path,
@@ -51,7 +51,7 @@ def parse_poetry_lock(lockfile: Lockfile) -> list[Dependency]:
         out.append(
             Dependency(
                 ecosystem="PyPI",
-                name=_normalize_name(name),
+                name=normalize_name(name),
                 version=version,
                 direct=True,
                 source_file=lockfile.path,
