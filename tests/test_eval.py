@@ -3,6 +3,7 @@ from datetime import datetime
 from evals.baseline import naive_flag
 from evals.datasets import Case
 from evals.metrics import aggregate, evaluate_case
+from evals.verifier_eval import aggregate_verifier, evaluate_verifier
 
 from palisade.models.advisory import AdvisoryRecord, AffectedPackage, Event, Range, Severity
 from palisade.models.dependency import Dependency
@@ -65,3 +66,13 @@ def test_metrics_patched_case_avoids_false_positives() -> None:
     assert m["palisade_false_positives"] == 0
     assert m["baseline_false_positives"] == 2  # naive flags both
     assert m["fp_reduction_vs_baseline"] == 1.0
+
+
+def test_verifier_catches_hallucination_without_false_rejection() -> None:
+    r = evaluate_verifier(_case("3.1.2"))  # one genuine in-range finding
+    assert r.genuine_findings == 1
+    assert r.hallucinations_caught == 1  # fabricated citation -> dropped
+    assert r.false_rejections == 0  # correctly-cited finding -> kept
+    agg = aggregate_verifier([r])
+    assert agg["hallucination_catch_rate"] == 1.0
+    assert agg["verifier_false_rejections"] == 0

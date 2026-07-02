@@ -17,10 +17,11 @@ from palisade.models.dependency import Dependency
 from palisade.models.finding import Finding, Remediation, VerifierVerdict
 
 
-def _pkg_for(dep: Dependency, adv: AdvisoryRecord) -> AffectedPackage | None:
+def _pkgs_for(dep: Dependency, adv: AdvisoryRecord) -> list[AffectedPackage]:
     # Key packages exactly as the matcher does (shared name_key) — the Verifier must not drift.
+    # An advisory may list the same package more than once (distinct ranges); return them all.
     want = name_key(dep.ecosystem, dep.name)
-    return next((p for p in adv.affected if name_key(p.ecosystem, p.name) == want), None)
+    return [p for p in adv.affected if name_key(p.ecosystem, p.name) == want]
 
 
 def build_remediation(finding: Finding) -> Remediation:
@@ -60,12 +61,12 @@ def build_remediation(finding: Finding) -> Remediation:
 
 def _version_in_range(finding: Finding, adv: AdvisoryRecord | None) -> bool:
     # Re-derive affectedness from the raw advisory — independent of the matcher's earlier verdict.
+    # Affected if ANY same-named affected package's range contains the version (mirrors the
+    # matcher); checking only the first would falsely reject multi-entry advisories.
     if adv is None:
         return False  # no evidence -> never ship unverified
-    pkg = _pkg_for(finding.dependency, adv)
-    if pkg is None:
-        return False
-    return is_version_affected(finding.dependency.ecosystem, finding.installed_version, pkg)
+    eco, version = finding.dependency.ecosystem, finding.installed_version
+    return any(is_version_affected(eco, version, pkg) for pkg in _pkgs_for(finding.dependency, adv))
 
 
 def _all_claims_cited(finding: Finding, adv: AdvisoryRecord | None) -> bool:

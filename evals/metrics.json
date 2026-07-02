@@ -6,5 +6,8 @@
   "version_match_accuracy": 1.0,
   "fp_reduction_vs_baseline": 1.0,
   "palisade_false_positives": 0,
-  "baseline_false_positives": 18
+  "baseline_false_positives": 18,
+  "verifier_findings_tested": 30,
+  "hallucination_catch_rate": 1.0,
+  "verifier_false_rejections": 0
 }
