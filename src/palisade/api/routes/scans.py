@@ -1,9 +1,12 @@
 """Synchronous scan endpoint (M1). Async queue mode arrives in M3."""
 
+from typing import Literal
+
 import httpx
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, field_validator
 
+from palisade.agents.graph import run_graph_content
 from palisade.models.finding import ScanReport
 from palisade.scanner import scan_content
 
@@ -15,6 +18,7 @@ _MAX_CONTENT = 500_000  # 500 KB — generous for any real lockfile
 class ScanRequest(BaseModel):
     filename: str  # e.g. "requirements.txt" — used to pick the parser
     content: str
+    engine: Literal["scan", "graph"] = "scan"  # M1 pipeline (default) or M2 agent graph
 
     @field_validator("content")
     @classmethod
@@ -26,8 +30,9 @@ class ScanRequest(BaseModel):
 
 @router.post("/scan", response_model=ScanReport)
 async def scan(req: ScanRequest) -> ScanReport:
+    runner = run_graph_content if req.engine == "graph" else scan_content
     try:
-        return await scan_content(req.filename, req.content)
+        return await runner(req.filename, req.content)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     except httpx.HTTPStatusError as exc:
