@@ -39,6 +39,10 @@ class Settings(BaseSettings):
     langfuse_secret_key: SecretStr | None = None
     langfuse_host: str = "https://cloud.langfuse.com"
 
+    # M3 scan-queue worker (see IMPLEMENTATION_PLAN.md §M3).
+    worker_poll_interval: float = 1.0  # seconds to sleep when the queue is empty
+    worker_stale_seconds: int = 900  # startup: reclaim 'running' rows older than this
+
 
 @lru_cache
 def get_settings() -> Settings:

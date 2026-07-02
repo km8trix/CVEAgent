@@ -29,5 +29,16 @@ services:
     volumes:
       - ./src:/app/src
 
+  worker:
+    build: .
+    command: python -m palisade.worker
+    environment:
+      DATABASE_URL: postgresql+psycopg://palisade:palisade@db:5432/palisade
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+
 volumes:
   pgdata:
