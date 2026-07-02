@@ -8,6 +8,7 @@ See IMPLEMENTATION_PLAN.md §4/§9.
 
 import asyncio
 import logging
+import time
 from datetime import UTC, date, datetime
 from typing import Any, Protocol
 from uuid import uuid4
@@ -120,6 +121,7 @@ async def scan(
     epss: _Epss | None = None,
     kev: _Kev | None = None,
 ) -> ScanReport:
+    start = time.monotonic()
     deps = parse_lockfile(lockfile)
     ecosystem = deps[0].ecosystem if deps else _KIND_TO_ECOSYSTEM.get(lockfile.kind, "PyPI")
     owns = osv is None
@@ -133,7 +135,9 @@ async def scan(
         cached_epss, cached_kev = await _cached_feeds()
         epss = epss if epss is not None else cached_epss
         kev = kev if kev is not None else cached_kev
-    return build_report(lockfile.path, ecosystem, deps, advisories, epss, kev)
+    report = build_report(lockfile.path, ecosystem, deps, advisories, epss, kev)
+    report.latency_ms = int((time.monotonic() - start) * 1000)
+    return report
 
 
 async def scan_content(filename: str, content: str, **kwargs: Any) -> ScanReport:

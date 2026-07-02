@@ -109,6 +109,7 @@ def test_scan_content_end_to_end() -> None:
     assert report.stats["total_dependencies"] == 2
     assert [f.dependency.name for f in report.findings] == ["jinja2"]
     assert report.findings[0].epss_score == 0.5
+    assert report.latency_ms is not None and report.latency_ms >= 0  # telemetry stamped
 
 
 def test_scan_empty_npm_lockfile_infers_ecosystem() -> None:
