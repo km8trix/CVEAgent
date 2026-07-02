@@ -1,0 +1,10 @@
+{
+  "cases": 6,
+  "precision": 1.0,
+  "recall": 1.0,
+  "kev_recall": 1.0,
+  "version_match_accuracy": 1.0,
+  "fp_reduction_vs_baseline": 1.0,
+  "palisade_false_positives": 0,
+  "baseline_false_positives": 18
+}

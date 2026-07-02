@@ -1,0 +1,40 @@
+{
+  "advisories": [
+    {
+      "id": "osv:GHSA-29mw-wpgm-hmr9",
+      "applies": true,
+      "is_kev": false,
+      "is_trap": false
+    },
+    {
+      "id": "osv:GHSA-35jh-r3h4-6jhm",
+      "applies": true,
+      "is_kev": false,
+      "is_trap": false
+    },
+    {
+      "id": "osv:GHSA-f23m-r3pf-42rh",
+      "applies": true,
+      "is_kev": false,
+      "is_trap": false
+    },
+    {
+      "id": "osv:GHSA-p6mc-m468-83gw",
+      "applies": true,
+      "is_kev": false,
+      "is_trap": false
+    },
+    {
+      "id": "osv:GHSA-r5fr-rjxr-66jc",
+      "applies": true,
+      "is_kev": false,
+      "is_trap": false
+    },
+    {
+      "id": "osv:GHSA-xxjr-mmjv-4gpg",
+      "applies": true,
+      "is_kev": false,
+      "is_trap": false
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "advisories": [
+    {
+      "id": "osv:GHSA-29vq-49wr-vm6x",
+      "applies": true,
+      "is_kev": false,
+      "is_trap": false
+    },
+    {
+      "id": "osv:GHSA-2g68-c3qc-8985",
+      "applies": false,
+      "is_kev": false,
+      "is_trap": true
+    },
+    {
+      "id": "osv:GHSA-87hc-h4r5-73f7",
+      "applies": true,
+      "is_kev": false,
+      "is_trap": false
+    },
+    {
+      "id": "osv:GHSA-f9vj-2wh5-fj8j",
+      "applies": false,
+      "is_kev": false,
+      "is_trap": true
+    },
+    {
+      "id": "osv:GHSA-hgf8-39gv-g3f2",
+      "applies": true,
+      "is_kev": false,
+      "is_trap": false
+    },
+    {
+      "id": "osv:GHSA-hrfv-mqp8-q5rw",
+      "applies": false,
+      "is_kev": false,
+      "is_trap": true
+    },
+    {
+      "id": "osv:GHSA-px8h-6qxv-m22q",
+      "applies": false,
+      "is_kev": false,
+      "is_trap": true
+    },
+    {
+      "id": "osv:GHSA-q34m-jh98-gwm2",
+      "applies": false,
+      "is_kev": false,
+      "is_trap": true
+    },
+    {
+      "id": "osv:GHSA-xg9f-g7g7-2323",
+      "applies": false,
+      "is_kev": false,
+      "is_trap": true
+    },
+    {
+      "id": "osv:PYSEC-2022-203",
+      "applies": false,
+      "is_kev": false,
+      "is_trap": true
+    },
+    {
+      "id": "osv:PYSEC-2023-221",
+      "applies": false,
+      "is_kev": false,
+      "is_trap": true
+    },
+    {
+      "id": "osv:PYSEC-2023-57",
+      "applies": false,
+      "is_kev": false,
+      "is_trap": true
+    },
+    {
+      "id": "osv:PYSEC-2023-58",
+      "applies": false,
+      "is_kev": false,
+      "is_trap": true
+    }
+  ]
+}

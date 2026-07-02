@@ -1,0 +1,1967 @@
+[
+  {
+    "id": "osv:GHSA-29vq-49wr-vm6x",
+    "source": "osv",
+    "source_id": "GHSA-29vq-49wr-vm6x",
+    "aliases": [
+      "CVE-2026-27199"
+    ],
+    "summary": " Werkzeug safe_join() allows Windows special device names",
+    "details": "Werkzeug's `safe_join` function allows Windows device names as filenames if when preceded by other path segments.\n\nThis was previously reported as https://github.com/pallets/werkzeug/security/advisories/GHSA-hgf8-39gv-g3f2, but the added filtering failed to account for the fact that `safe_join` accepts paths with multiple segments, such as `example/NUL`.\n\n`send_from_directory` uses `safe_join` to safely serve files at user-specified paths under a directory. If the application is running on Windows, and the requested path ends with a special device name, the file will be opened successfully, but reading will hang indefinitely.",
+    "severity": {
+      "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:N/VI:N/VA:L/SC:N/SI:N/SA:N",
+      "cvss_score": null,
+      "bucket": "medium"
+    },
+    "cwe_ids": [
+      "CWE-67"
+    ],
+    "affected": [
+      {
+        "ecosystem": "PyPI",
+        "name": "werkzeug",
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0",
+                "fixed": null,
+                "last_affected": null
+              },
+              {
+                "introduced": null,
+                "fixed": "3.1.6",
+                "last_affected": null
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.1",
+          "0.10",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.10.4",
+          "0.11",
+          "0.11.1",
+          "0.11.10",
+          "0.11.11",
+          "0.11.12",
+          "0.11.13",
+          "0.11.14",
+          "0.11.15",
+          "0.11.2",
+          "0.11.3",
+          "0.11.4",
+          "0.11.5",
+          "0.11.6",
+          "0.11.7",
+          "0.11.8",
+          "0.11.9",
+          "0.12",
+          "0.12.1",
+          "0.12.2",
+          "0.13",
+          "0.14",
+          "0.14.1",
+          "0.15.0",
+          "0.15.1",
+          "0.15.2",
+          "0.15.3",
+          "0.15.4",
+          "0.15.5",
+          "0.15.6",
+          "0.16.0",
+          "0.16.1",
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4",
+          "0.4.1",
+          "0.5",
+          "0.5.1",
+          "0.6",
+          "0.6.1",
+          "0.6.2",
+          "0.7",
+          "0.7.1",
+          "0.7.2",
+          "0.8",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.9",
+          "0.9.1",
+          "0.9.2",
+          "0.9.3",
+          "0.9.4",
+          "0.9.5",
+          "0.9.6",
+          "1.0.0",
+          "1.0.0rc1",
+          "1.0.1",
+          "2.0.0",
+          "2.0.0rc1",
+          "2.0.0rc2",
+          "2.0.0rc3",
+          "2.0.0rc4",
+          "2.0.0rc5",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.1.0",
+          "2.1.1",
+          "2.1.2",
+          "2.2.0",
+          "2.2.0a1",
+          "2.2.1",
+          "2.2.2",
+          "2.2.3",
+          "2.3.0",
+          "2.3.1",
+          "2.3.2",
+          "2.3.3",
+          "2.3.4",
+          "2.3.5",
+          "2.3.6",
+          "2.3.7",
+          "2.3.8",
+          "3.0.0",
+          "3.0.1",
+          "3.0.2",
+          "3.0.3",
+          "3.0.4",
+          "3.0.5",
+          "3.0.6",
+          "3.1.0",
+          "3.1.1",
+          "3.1.2",
+          "3.1.3",
+          "3.1.4",
+          "3.1.5"
+        ],
+        "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/02/GHSA-29vq-49wr-vm6x/GHSA-29vq-49wr-vm6x.json"
+        }
+      }
+    ],
+    "references": [
+      "https://github.com/pallets/werkzeug/security/advisories/GHSA-29vq-49wr-vm6x",
+      "https://nvd.nist.gov/vuln/detail/CVE-2026-27199",
+      "https://github.com/pallets/werkzeug/commit/f407712fdc60a09c2b3f4fe7db557703e5d9338d",
+      "https://github.com/pallets/werkzeug",
+      "https://github.com/pallets/werkzeug/releases/tag/3.1.6"
+    ],
+    "published": "2026-02-19T20:32:45Z",
+    "modified": "2026-02-23T23:43:27.690386Z",
+    "content_hash": "8652d47a31f4a41d1c9f27543b38567fdd59e22693da61347a64240f48c13d4f"
+  },
+  {
+    "id": "osv:GHSA-2g68-c3qc-8985",
+    "source": "osv",
+    "source_id": "GHSA-2g68-c3qc-8985",
+    "aliases": [
+      "CVE-2024-34069"
+    ],
+    "summary": "Werkzeug debugger vulnerable to remote execution when interacting with attacker controlled domain",
+    "details": "The debugger in affected versions of Werkzeug can allow an attacker to execute code on a developer's machine under some circumstances. This requires the attacker to get the developer to interact with a domain and subdomain they control, and enter the debugger PIN, but if they are successful it allows access to the debugger even if it is only running on localhost. This also requires the attacker to guess a URL in the developer's application that will trigger the debugger.",
+    "severity": {
+      "cvss_vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:H",
+      "cvss_score": null,
+      "bucket": "high"
+    },
+    "cwe_ids": [
+      "CWE-352"
+    ],
+    "affected": [
+      {
+        "ecosystem": "PyPI",
+        "name": "werkzeug",
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0",
+                "fixed": null,
+                "last_affected": null
+              },
+              {
+                "introduced": null,
+                "fixed": "3.0.3",
+                "last_affected": null
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.1",
+          "0.10",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.10.4",
+          "0.11",
+          "0.11.1",
+          "0.11.10",
+          "0.11.11",
+          "0.11.12",
+          "0.11.13",
+          "0.11.14",
+          "0.11.15",
+          "0.11.2",
+          "0.11.3",
+          "0.11.4",
+          "0.11.5",
+          "0.11.6",
+          "0.11.7",
+          "0.11.8",
+          "0.11.9",
+          "0.12",
+          "0.12.1",
+          "0.12.2",
+          "0.13",
+          "0.14",
+          "0.14.1",
+          "0.15.0",
+          "0.15.1",
+          "0.15.2",
+          "0.15.3",
+          "0.15.4",
+          "0.15.5",
+          "0.15.6",
+          "0.16.0",
+          "0.16.1",
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4",
+          "0.4.1",
+          "0.5",
+          "0.5.1",
+          "0.6",
+          "0.6.1",
+          "0.6.2",
+          "0.7",
+          "0.7.1",
+          "0.7.2",
+          "0.8",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.9",
+          "0.9.1",
+          "0.9.2",
+          "0.9.3",
+          "0.9.4",
+          "0.9.5",
+          "0.9.6",
+          "1.0.0",
+          "1.0.0rc1",
+          "1.0.1",
+          "2.0.0",
+          "2.0.0rc1",
+          "2.0.0rc2",
+          "2.0.0rc3",
+          "2.0.0rc4",
+          "2.0.0rc5",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.1.0",
+          "2.1.1",
+          "2.1.2",
+          "2.2.0",
+          "2.2.0a1",
+          "2.2.1",
+          "2.2.2",
+          "2.2.3",
+          "2.3.0",
+          "2.3.1",
+          "2.3.2",
+          "2.3.3",
+          "2.3.4",
+          "2.3.5",
+          "2.3.6",
+          "2.3.7",
+          "2.3.8",
+          "3.0.0",
+          "3.0.1",
+          "3.0.2"
+        ],
+        "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2024/05/GHSA-2g68-c3qc-8985/GHSA-2g68-c3qc-8985.json"
+        }
+      }
+    ],
+    "references": [
+      "https://github.com/pallets/werkzeug/security/advisories/GHSA-2g68-c3qc-8985",
+      "https://nvd.nist.gov/vuln/detail/CVE-2024-34069",
+      "https://github.com/pallets/werkzeug/commit/3386395b24c7371db11a5b8eaac0c91da5362692",
+      "https://github.com/pallets/werkzeug",
+      "https://lists.debian.org/debian-lts-announce/2025/02/msg00026.html",
+      "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/H4SH32AM3CTPMAAEOIDAN7VU565LO4IR",
+      "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/HFERFN7PINV4MOGMGA3DPIXJPDCYOEJZ",
+      "https://security.netapp.com/advisory/ntap-20240614-0004"
+    ],
+    "published": "2024-05-06T14:21:27Z",
+    "modified": "2026-02-04T04:19:36.666836Z",
+    "content_hash": "ba0af20c07342ebc2f5ea2d978e04ca4a4af577b73649c25b6412ce11b035ad1"
+  },
+  {
+    "id": "osv:GHSA-87hc-h4r5-73f7",
+    "source": "osv",
+    "source_id": "GHSA-87hc-h4r5-73f7",
+    "aliases": [
+      "CVE-2026-21860"
+    ],
+    "summary": " Werkzeug safe_join() allows Windows special device names with compound extensions",
+    "details": "Werkzeug's `safe_join` function allows path segments with Windows device names that have file extensions or trailing spaces. On Windows, there are special device names such as `CON`, `AUX`, etc that are implicitly present and readable in every directory. Windows still accepts them with any file extension, such as `CON.txt`, or trailing spaces such as `CON `.\n\nThis was previously reported as https://github.com/pallets/werkzeug/security/advisories/GHSA-hgf8-39gv-g3f2, but the fix failed to account for compound extensions such as `CON.txt.html` or trailing spaces. It also missed some additional special names.\n\n`send_from_directory` uses `safe_join` to safely serve files at user-specified paths under a directory. If the application is running on Windows, and the requested path ends with a special device name, the file will be opened successfully, but reading will hang indefinitely.",
+    "severity": {
+      "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+      "cvss_score": null,
+      "bucket": "medium"
+    },
+    "cwe_ids": [
+      "CWE-67"
+    ],
+    "affected": [
+      {
+        "ecosystem": "PyPI",
+        "name": "werkzeug",
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0",
+                "fixed": null,
+                "last_affected": null
+              },
+              {
+                "introduced": null,
+                "fixed": "3.1.5",
+                "last_affected": null
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.1",
+          "0.10",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.10.4",
+          "0.11",
+          "0.11.1",
+          "0.11.10",
+          "0.11.11",
+          "0.11.12",
+          "0.11.13",
+          "0.11.14",
+          "0.11.15",
+          "0.11.2",
+          "0.11.3",
+          "0.11.4",
+          "0.11.5",
+          "0.11.6",
+          "0.11.7",
+          "0.11.8",
+          "0.11.9",
+          "0.12",
+          "0.12.1",
+          "0.12.2",
+          "0.13",
+          "0.14",
+          "0.14.1",
+          "0.15.0",
+          "0.15.1",
+          "0.15.2",
+          "0.15.3",
+          "0.15.4",
+          "0.15.5",
+          "0.15.6",
+          "0.16.0",
+          "0.16.1",
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4",
+          "0.4.1",
+          "0.5",
+          "0.5.1",
+          "0.6",
+          "0.6.1",
+          "0.6.2",
+          "0.7",
+          "0.7.1",
+          "0.7.2",
+          "0.8",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.9",
+          "0.9.1",
+          "0.9.2",
+          "0.9.3",
+          "0.9.4",
+          "0.9.5",
+          "0.9.6",
+          "1.0.0",
+          "1.0.0rc1",
+          "1.0.1",
+          "2.0.0",
+          "2.0.0rc1",
+          "2.0.0rc2",
+          "2.0.0rc3",
+          "2.0.0rc4",
+          "2.0.0rc5",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.1.0",
+          "2.1.1",
+          "2.1.2",
+          "2.2.0",
+          "2.2.0a1",
+          "2.2.1",
+          "2.2.2",
+          "2.2.3",
+          "2.3.0",
+          "2.3.1",
+          "2.3.2",
+          "2.3.3",
+          "2.3.4",
+          "2.3.5",
+          "2.3.6",
+          "2.3.7",
+          "2.3.8",
+          "3.0.0",
+          "3.0.1",
+          "3.0.2",
+          "3.0.3",
+          "3.0.4",
+          "3.0.5",
+          "3.0.6",
+          "3.1.0",
+          "3.1.1",
+          "3.1.2",
+          "3.1.3",
+          "3.1.4"
+        ],
+        "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/01/GHSA-87hc-h4r5-73f7/GHSA-87hc-h4r5-73f7.json"
+        }
+      }
+    ],
+    "references": [
+      "https://github.com/pallets/werkzeug/security/advisories/GHSA-87hc-h4r5-73f7",
+      "https://nvd.nist.gov/vuln/detail/CVE-2026-21860",
+      "https://github.com/pallets/werkzeug/commit/7ae1d254e04a0c33e241ac1cca4783ce6c875ca3",
+      "https://github.com/pallets/werkzeug"
+    ],
+    "published": "2026-01-08T19:51:21Z",
+    "modified": "2026-02-04T03:18:07.993642Z",
+    "content_hash": "d272bacbea8f42ba7ff54bea82764aad5a53c4160838da5aeee6da223c81f463"
+  },
+  {
+    "id": "osv:GHSA-f9vj-2wh5-fj8j",
+    "source": "osv",
+    "source_id": "GHSA-f9vj-2wh5-fj8j",
+    "aliases": [
+      "CVE-2024-49766"
+    ],
+    "summary": "Werkzeug safe_join not safe on Windows",
+    "details": "On Python < 3.11 on Windows, `os.path.isabs()` does not catch UNC paths like `//server/share`. Werkzeug's `safe_join()` relies on this check, and so can produce a path that is not safe, potentially allowing unintended access to data. Applications using Python >= 3.11, or not using Windows, are not vulnerable.",
+    "severity": {
+      "cvss_vector": "CVSS:4.0/AV:N/AC:H/AT:N/PR:N/UI:N/VC:L/VI:N/VA:N/SC:N/SI:N/SA:N",
+      "cvss_score": null,
+      "bucket": "medium"
+    },
+    "cwe_ids": [
+      "CWE-22"
+    ],
+    "affected": [
+      {
+        "ecosystem": "PyPI",
+        "name": "werkzeug",
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0",
+                "fixed": null,
+                "last_affected": null
+              },
+              {
+                "introduced": null,
+                "fixed": "3.0.6",
+                "last_affected": null
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.1",
+          "0.10",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.10.4",
+          "0.11",
+          "0.11.1",
+          "0.11.10",
+          "0.11.11",
+          "0.11.12",
+          "0.11.13",
+          "0.11.14",
+          "0.11.15",
+          "0.11.2",
+          "0.11.3",
+          "0.11.4",
+          "0.11.5",
+          "0.11.6",
+          "0.11.7",
+          "0.11.8",
+          "0.11.9",
+          "0.12",
+          "0.12.1",
+          "0.12.2",
+          "0.13",
+          "0.14",
+          "0.14.1",
+          "0.15.0",
+          "0.15.1",
+          "0.15.2",
+          "0.15.3",
+          "0.15.4",
+          "0.15.5",
+          "0.15.6",
+          "0.16.0",
+          "0.16.1",
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4",
+          "0.4.1",
+          "0.5",
+          "0.5.1",
+          "0.6",
+          "0.6.1",
+          "0.6.2",
+          "0.7",
+          "0.7.1",
+          "0.7.2",
+          "0.8",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.9",
+          "0.9.1",
+          "0.9.2",
+          "0.9.3",
+          "0.9.4",
+          "0.9.5",
+          "0.9.6",
+          "1.0.0",
+          "1.0.0rc1",
+          "1.0.1",
+          "2.0.0",
+          "2.0.0rc1",
+          "2.0.0rc2",
+          "2.0.0rc3",
+          "2.0.0rc4",
+          "2.0.0rc5",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.1.0",
+          "2.1.1",
+          "2.1.2",
+          "2.2.0",
+          "2.2.0a1",
+          "2.2.1",
+          "2.2.2",
+          "2.2.3",
+          "2.3.0",
+          "2.3.1",
+          "2.3.2",
+          "2.3.3",
+          "2.3.4",
+          "2.3.5",
+          "2.3.6",
+          "2.3.7",
+          "2.3.8",
+          "3.0.0",
+          "3.0.1",
+          "3.0.2",
+          "3.0.3",
+          "3.0.4",
+          "3.0.5"
+        ],
+        "database_specific": {
+          "last_known_affected_version_range": "<= 3.0.5",
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2024/10/GHSA-f9vj-2wh5-fj8j/GHSA-f9vj-2wh5-fj8j.json"
+        }
+      }
+    ],
+    "references": [
+      "https://github.com/pallets/werkzeug/security/advisories/GHSA-f9vj-2wh5-fj8j",
+      "https://nvd.nist.gov/vuln/detail/CVE-2024-49766",
+      "https://github.com/pallets/werkzeug/commit/2767bcb10a7dd1c297d812cc5e6d11a474c1f092",
+      "https://github.com/pallets/werkzeug",
+      "https://github.com/pallets/werkzeug/releases/tag/3.0.6",
+      "https://security.netapp.com/advisory/ntap-20250131-0005"
+    ],
+    "published": "2024-10-25T19:43:41Z",
+    "modified": "2026-02-04T03:19:55.895802Z",
+    "content_hash": "c34178bebd6a8e8d58c0eeb19da4c682ed9ff8bb5fd578c2c9e2a7b83442da16"
+  },
+  {
+    "id": "osv:GHSA-hgf8-39gv-g3f2",
+    "source": "osv",
+    "source_id": "GHSA-hgf8-39gv-g3f2",
+    "aliases": [
+      "CVE-2025-66221"
+    ],
+    "summary": "Werkzeug safe_join() allows Windows special device names",
+    "details": "Werkzeug's `safe_join` function allows path segments with Windows device names. On Windows, there are special device names such as `CON`, `AUX`, etc that are implicitly present and readable in every directory. `send_from_directory` uses `safe_join` to safely serve files at user-specified paths under a directory. If the application is running on Windows, and the requested path ends with a special device name, the file will be opened successfully, but reading will hang indefinitely.",
+    "severity": {
+      "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:N/VI:N/VA:L/SC:N/SI:N/SA:N",
+      "cvss_score": null,
+      "bucket": "medium"
+    },
+    "cwe_ids": [
+      "CWE-67"
+    ],
+    "affected": [
+      {
+        "ecosystem": "PyPI",
+        "name": "werkzeug",
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0",
+                "fixed": null,
+                "last_affected": null
+              },
+              {
+                "introduced": null,
+                "fixed": "3.1.4",
+                "last_affected": null
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.1",
+          "0.10",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.10.4",
+          "0.11",
+          "0.11.1",
+          "0.11.10",
+          "0.11.11",
+          "0.11.12",
+          "0.11.13",
+          "0.11.14",
+          "0.11.15",
+          "0.11.2",
+          "0.11.3",
+          "0.11.4",
+          "0.11.5",
+          "0.11.6",
+          "0.11.7",
+          "0.11.8",
+          "0.11.9",
+          "0.12",
+          "0.12.1",
+          "0.12.2",
+          "0.13",
+          "0.14",
+          "0.14.1",
+          "0.15.0",
+          "0.15.1",
+          "0.15.2",
+          "0.15.3",
+          "0.15.4",
+          "0.15.5",
+          "0.15.6",
+          "0.16.0",
+          "0.16.1",
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4",
+          "0.4.1",
+          "0.5",
+          "0.5.1",
+          "0.6",
+          "0.6.1",
+          "0.6.2",
+          "0.7",
+          "0.7.1",
+          "0.7.2",
+          "0.8",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.9",
+          "0.9.1",
+          "0.9.2",
+          "0.9.3",
+          "0.9.4",
+          "0.9.5",
+          "0.9.6",
+          "1.0.0",
+          "1.0.0rc1",
+          "1.0.1",
+          "2.0.0",
+          "2.0.0rc1",
+          "2.0.0rc2",
+          "2.0.0rc3",
+          "2.0.0rc4",
+          "2.0.0rc5",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.1.0",
+          "2.1.1",
+          "2.1.2",
+          "2.2.0",
+          "2.2.0a1",
+          "2.2.1",
+          "2.2.2",
+          "2.2.3",
+          "2.3.0",
+          "2.3.1",
+          "2.3.2",
+          "2.3.3",
+          "2.3.4",
+          "2.3.5",
+          "2.3.6",
+          "2.3.7",
+          "2.3.8",
+          "3.0.0",
+          "3.0.1",
+          "3.0.2",
+          "3.0.3",
+          "3.0.4",
+          "3.0.5",
+          "3.0.6",
+          "3.1.0",
+          "3.1.1",
+          "3.1.2",
+          "3.1.3"
+        ],
+        "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/12/GHSA-hgf8-39gv-g3f2/GHSA-hgf8-39gv-g3f2.json"
+        }
+      }
+    ],
+    "references": [
+      "https://github.com/pallets/werkzeug/security/advisories/GHSA-hgf8-39gv-g3f2",
+      "https://nvd.nist.gov/vuln/detail/CVE-2025-66221",
+      "https://github.com/pallets/werkzeug/commit/4b833376a45c323a189cd11d2362bcffdb1c0c13",
+      "https://github.com/pallets/werkzeug",
+      "https://github.com/pallets/werkzeug/releases/tag/3.1.4"
+    ],
+    "published": "2025-12-02T00:27:38Z",
+    "modified": "2026-02-04T02:33:10.151277Z",
+    "content_hash": "fe347d5db891a1359641d5cc1458b10ab96b38108ef0964ea2730068b63bb2bc"
+  },
+  {
+    "id": "osv:GHSA-hrfv-mqp8-q5rw",
+    "source": "osv",
+    "source_id": "GHSA-hrfv-mqp8-q5rw",
+    "aliases": [
+      "CVE-2023-46136",
+      "PYSEC-2023-221"
+    ],
+    "summary": "Werkzeug DoS: High resource usage when parsing multipart/form-data containing a large part with CR/LF character at the beginning",
+    "details": "Werkzeug multipart data parser needs to find a boundary that may be between consecutive chunks. That's why parsing is based on looking for newline characters. Unfortunately, code looking for partial boundary in the buffer is written inefficiently, so if we upload a file that starts with CR or LF and then is followed by megabytes of data without these characters: all of these bytes are appended chunk by chunk into internal bytearray and lookup for boundary is performed on growing buffer.\n\nThis allows an attacker to cause a denial of service by sending crafted multipart data to an endpoint that will parse it. The amount of CPU time required can block worker processes from handling legitimate requests. The amount of RAM required can trigger an out of memory kill of the process. If many concurrent requests are sent continuously, this can exhaust or kill all available workers.",
+    "severity": {
+      "cvss_vector": "CVSS:3.1/AV:A/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H",
+      "cvss_score": null,
+      "bucket": "medium"
+    },
+    "cwe_ids": [
+      "CWE-400",
+      "CWE-787"
+    ],
+    "affected": [
+      {
+        "ecosystem": "PyPI",
+        "name": "werkzeug",
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "3.0.0",
+                "fixed": null,
+                "last_affected": null
+              },
+              {
+                "introduced": null,
+                "fixed": "3.0.1",
+                "last_affected": null
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "3.0.0"
+        ],
+        "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2023/10/GHSA-hrfv-mqp8-q5rw/GHSA-hrfv-mqp8-q5rw.json"
+        }
+      },
+      {
+        "ecosystem": "PyPI",
+        "name": "werkzeug",
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "2.0.0rc1",
+                "fixed": null,
+                "last_affected": null
+              },
+              {
+                "introduced": null,
+                "fixed": "2.3.8",
+                "last_affected": null
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "2.0.0",
+          "2.0.0rc1",
+          "2.0.0rc2",
+          "2.0.0rc3",
+          "2.0.0rc4",
+          "2.0.0rc5",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.1.0",
+          "2.1.1",
+          "2.1.2",
+          "2.2.0",
+          "2.2.0a1",
+          "2.2.1",
+          "2.2.2",
+          "2.2.3",
+          "2.3.0",
+          "2.3.1",
+          "2.3.2",
+          "2.3.3",
+          "2.3.4",
+          "2.3.5",
+          "2.3.6",
+          "2.3.7"
+        ],
+        "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2023/10/GHSA-hrfv-mqp8-q5rw/GHSA-hrfv-mqp8-q5rw.json"
+        }
+      }
+    ],
+    "references": [
+      "https://github.com/pallets/werkzeug/security/advisories/GHSA-hrfv-mqp8-q5rw",
+      "https://nvd.nist.gov/vuln/detail/CVE-2023-46136",
+      "https://github.com/pallets/werkzeug/commit/b1916c0c083e0be1c9d887ee2f3d696922bfc5c1",
+      "https://github.com/pallets/werkzeug/commit/cbb446fdcada7685fce936ded01b76c08dbd6eb5",
+      "https://github.com/pallets/werkzeug/commit/f2300208d5e2a5076cbbb4c2aad71096fd040ef9",
+      "https://github.com/pallets/werkzeug/commit/f3c803b3ade485a45f12b6d6617595350c0f03e2",
+      "https://github.com/pallets/werkzeug",
+      "https://github.com/pypa/advisory-database/tree/main/vulns/werkzeug/PYSEC-2023-221.yaml",
+      "https://security.netapp.com/advisory/ntap-20231124-0008"
+    ],
+    "published": "2023-10-25T14:22:59Z",
+    "modified": "2026-05-20T22:30:15.619134Z",
+    "content_hash": "6d995d2c60bb9fb355a1190b40790fe19e2f0eec7c9774c259fd7c3eb3a050a7"
+  },
+  {
+    "id": "osv:GHSA-px8h-6qxv-m22q",
+    "source": "osv",
+    "source_id": "GHSA-px8h-6qxv-m22q",
+    "aliases": [
+      "CVE-2023-23934",
+      "PYSEC-2023-57"
+    ],
+    "summary": "Incorrect parsing of nameless cookies leads to __Host- cookies bypass",
+    "details": "Browsers may allow \"nameless\" cookies that look like `=value` instead of `key=value`. A vulnerable browser may allow a compromised application on an adjacent subdomain to exploit this to set a cookie like `=__Host-test=bad` for another subdomain.\n\nWerkzeug <= 2.2.2 will parse the cookie `=__Host-test=bad` as `__Host-test=bad`. If a Werkzeug application is running next to a vulnerable or malicious subdomain which sets such a cookie using a vulnerable browser, the Werkzeug application will see the bad cookie value but the valid cookie key.",
+    "severity": {
+      "cvss_vector": "CVSS:3.1/AV:A/AC:H/PR:N/UI:R/S:U/C:N/I:L/A:N",
+      "cvss_score": null,
+      "bucket": "low"
+    },
+    "cwe_ids": [
+      "CWE-20"
+    ],
+    "affected": [
+      {
+        "ecosystem": "PyPI",
+        "name": "werkzeug",
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0",
+                "fixed": null,
+                "last_affected": null
+              },
+              {
+                "introduced": null,
+                "fixed": "2.2.3",
+                "last_affected": null
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.1",
+          "0.10",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.10.4",
+          "0.11",
+          "0.11.1",
+          "0.11.10",
+          "0.11.11",
+          "0.11.12",
+          "0.11.13",
+          "0.11.14",
+          "0.11.15",
+          "0.11.2",
+          "0.11.3",
+          "0.11.4",
+          "0.11.5",
+          "0.11.6",
+          "0.11.7",
+          "0.11.8",
+          "0.11.9",
+          "0.12",
+          "0.12.1",
+          "0.12.2",
+          "0.13",
+          "0.14",
+          "0.14.1",
+          "0.15.0",
+          "0.15.1",
+          "0.15.2",
+          "0.15.3",
+          "0.15.4",
+          "0.15.5",
+          "0.15.6",
+          "0.16.0",
+          "0.16.1",
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4",
+          "0.4.1",
+          "0.5",
+          "0.5.1",
+          "0.6",
+          "0.6.1",
+          "0.6.2",
+          "0.7",
+          "0.7.1",
+          "0.7.2",
+          "0.8",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.9",
+          "0.9.1",
+          "0.9.2",
+          "0.9.3",
+          "0.9.4",
+          "0.9.5",
+          "0.9.6",
+          "1.0.0",
+          "1.0.0rc1",
+          "1.0.1",
+          "2.0.0",
+          "2.0.0rc1",
+          "2.0.0rc2",
+          "2.0.0rc3",
+          "2.0.0rc4",
+          "2.0.0rc5",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.1.0",
+          "2.1.1",
+          "2.1.2",
+          "2.2.0",
+          "2.2.0a1",
+          "2.2.1",
+          "2.2.2"
+        ],
+        "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2023/02/GHSA-px8h-6qxv-m22q/GHSA-px8h-6qxv-m22q.json"
+        }
+      }
+    ],
+    "references": [
+      "https://github.com/pallets/werkzeug/security/advisories/GHSA-px8h-6qxv-m22q",
+      "https://nvd.nist.gov/vuln/detail/CVE-2023-23934",
+      "https://github.com/pallets/werkzeug/commit/cf275f42acad1b5950c50ffe8ef58fe62cdce028",
+      "https://github.com/pallets/werkzeug",
+      "https://github.com/pallets/werkzeug/releases/tag/2.2.3",
+      "https://github.com/pypa/advisory-database/tree/main/vulns/werkzeug/PYSEC-2023-57.yaml",
+      "https://security.netapp.com/advisory/ntap-20230818-0003",
+      "https://www.debian.org/security/2023/dsa-5470"
+    ],
+    "published": "2023-02-15T15:37:03Z",
+    "modified": "2026-02-04T02:50:59.290989Z",
+    "content_hash": "ae6a4ea6cd29fddbcc08fac64d64191809edc8a79f819204d1d55adbaacb485f"
+  },
+  {
+    "id": "osv:GHSA-q34m-jh98-gwm2",
+    "source": "osv",
+    "source_id": "GHSA-q34m-jh98-gwm2",
+    "aliases": [
+      "CVE-2024-49767"
+    ],
+    "summary": "Werkzeug possible resource exhaustion when parsing file data in forms",
+    "details": "Applications using Werkzeug to parse `multipart/form-data` requests are vulnerable to resource exhaustion. A specially crafted form body can bypass the `Request.max_form_memory_size` setting.\n\n\nThe `Request.max_content_length` setting, as well as resource limits provided by deployment software and platforms, are also available to limit the resources used during a request. This vulnerability does not affect those settings. All three types of limits should be considered and set appropriately when deploying an application.",
+    "severity": {
+      "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+      "cvss_score": null,
+      "bucket": "medium"
+    },
+    "cwe_ids": [
+      "CWE-400"
+    ],
+    "affected": [
+      {
+        "ecosystem": "PyPI",
+        "name": "werkzeug",
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "2.0.0rc1",
+                "fixed": null,
+                "last_affected": null
+              },
+              {
+                "introduced": null,
+                "fixed": "3.0.6",
+                "last_affected": null
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "2.0.0",
+          "2.0.0rc1",
+          "2.0.0rc2",
+          "2.0.0rc3",
+          "2.0.0rc4",
+          "2.0.0rc5",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.1.0",
+          "2.1.1",
+          "2.1.2",
+          "2.2.0",
+          "2.2.0a1",
+          "2.2.1",
+          "2.2.2",
+          "2.2.3",
+          "2.3.0",
+          "2.3.1",
+          "2.3.2",
+          "2.3.3",
+          "2.3.4",
+          "2.3.5",
+          "2.3.6",
+          "2.3.7",
+          "2.3.8",
+          "3.0.0",
+          "3.0.1",
+          "3.0.2",
+          "3.0.3",
+          "3.0.4",
+          "3.0.5"
+        ],
+        "database_specific": {
+          "last_known_affected_version_range": "<= 3.0.5",
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2024/10/GHSA-q34m-jh98-gwm2/GHSA-q34m-jh98-gwm2.json"
+        }
+      },
+      {
+        "ecosystem": "PyPI",
+        "name": "quart",
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0",
+                "fixed": null,
+                "last_affected": null
+              },
+              {
+                "introduced": null,
+                "fixed": "0.20.0",
+                "last_affected": null
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.1.0",
+          "0.10.0",
+          "0.11.0",
+          "0.11.1",
+          "0.11.2",
+          "0.11.3",
+          "0.11.4",
+          "0.11.5",
+          "0.12.0",
+          "0.13.0",
+          "0.13.1",
+          "0.14.0",
+          "0.14.1",
+          "0.15.0",
+          "0.15.1",
+          "0.16.0",
+          "0.16.1",
+          "0.16.2",
+          "0.16.3",
+          "0.17.0",
+          "0.18.0",
+          "0.18.1",
+          "0.18.2",
+          "0.18.3",
+          "0.18.4",
+          "0.19.0",
+          "0.19.1",
+          "0.19.2",
+          "0.19.3",
+          "0.19.4",
+          "0.19.5",
+          "0.19.6",
+          "0.19.7",
+          "0.19.8",
+          "0.19.9",
+          "0.2.0",
+          "0.3.0",
+          "0.3.1",
+          "0.4.0",
+          "0.4.1",
+          "0.5.0",
+          "0.6.0",
+          "0.6.1",
+          "0.6.10",
+          "0.6.11",
+          "0.6.12",
+          "0.6.13",
+          "0.6.14",
+          "0.6.15",
+          "0.6.2",
+          "0.6.3",
+          "0.6.4",
+          "0.6.5",
+          "0.6.6",
+          "0.6.7",
+          "0.6.8",
+          "0.6.9",
+          "0.7.0",
+          "0.7.1",
+          "0.7.2",
+          "0.8.0",
+          "0.8.1",
+          "0.9.0",
+          "0.9.1"
+        ],
+        "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2024/10/GHSA-q34m-jh98-gwm2/GHSA-q34m-jh98-gwm2.json"
+        }
+      }
+    ],
+    "references": [
+      "https://github.com/pallets/werkzeug/security/advisories/GHSA-q34m-jh98-gwm2",
+      "https://nvd.nist.gov/vuln/detail/CVE-2024-49767",
+      "https://github.com/pallets/quart/commit/5e78c4169b8eb66b91ead3e62d44721b9e1644ee",
+      "https://github.com/pallets/quart/commit/abb04a512496206de279225340ed022852fbf51f",
+      "https://github.com/pallets/werkzeug/commit/50cfeebcb0727e18cc52ffbeb125f4a66551179b",
+      "https://github.com/pallets/werkzeug/commit/cbb446fdcada7685fce936ded01b76c08dbd6eb5",
+      "https://github.com/pallets/werkzeug",
+      "https://github.com/pallets/werkzeug/releases/tag/3.0.6",
+      "https://security.netapp.com/advisory/ntap-20250103-0007"
+    ],
+    "published": "2024-10-25T19:44:43Z",
+    "modified": "2026-05-20T22:30:15.624255Z",
+    "content_hash": "264f353d50619bdf1e01daf7ef3f6f9f4263d3b1f0ac72ba5f5454b1201318b3"
+  },
+  {
+    "id": "osv:GHSA-xg9f-g7g7-2323",
+    "source": "osv",
+    "source_id": "GHSA-xg9f-g7g7-2323",
+    "aliases": [
+      "CVE-2023-25577",
+      "PYSEC-2023-58"
+    ],
+    "summary": "High resource usage when parsing multipart form data with many fields",
+    "details": "Werkzeug's multipart form data parser will parse an unlimited number of parts, including file parts. Parts can be a small amount of bytes, but each requires CPU time to parse and may use more memory as Python data. If a request can be made to an endpoint that accesses `request.data`, `request.form`, `request.files`, or `request.get_data(parse_form_data=False)`, it can cause unexpectedly high resource usage.\n\nThis allows an attacker to cause a denial of service by sending crafted multipart data to an endpoint that will parse it. The amount of CPU time required can block worker processes from handling legitimate requests. The amount of RAM required can trigger an out of memory kill of the process. Unlimited file parts can use up memory and file handles. If many concurrent requests are sent continuously, this can exhaust or kill all available workers.",
+    "severity": {
+      "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+      "cvss_score": null,
+      "bucket": "high"
+    },
+    "cwe_ids": [
+      "CWE-400",
+      "CWE-770"
+    ],
+    "affected": [
+      {
+        "ecosystem": "PyPI",
+        "name": "werkzeug",
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0",
+                "fixed": null,
+                "last_affected": null
+              },
+              {
+                "introduced": null,
+                "fixed": "2.2.3",
+                "last_affected": null
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.1",
+          "0.10",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.10.4",
+          "0.11",
+          "0.11.1",
+          "0.11.10",
+          "0.11.11",
+          "0.11.12",
+          "0.11.13",
+          "0.11.14",
+          "0.11.15",
+          "0.11.2",
+          "0.11.3",
+          "0.11.4",
+          "0.11.5",
+          "0.11.6",
+          "0.11.7",
+          "0.11.8",
+          "0.11.9",
+          "0.12",
+          "0.12.1",
+          "0.12.2",
+          "0.13",
+          "0.14",
+          "0.14.1",
+          "0.15.0",
+          "0.15.1",
+          "0.15.2",
+          "0.15.3",
+          "0.15.4",
+          "0.15.5",
+          "0.15.6",
+          "0.16.0",
+          "0.16.1",
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4",
+          "0.4.1",
+          "0.5",
+          "0.5.1",
+          "0.6",
+          "0.6.1",
+          "0.6.2",
+          "0.7",
+          "0.7.1",
+          "0.7.2",
+          "0.8",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.9",
+          "0.9.1",
+          "0.9.2",
+          "0.9.3",
+          "0.9.4",
+          "0.9.5",
+          "0.9.6",
+          "1.0.0",
+          "1.0.0rc1",
+          "1.0.1",
+          "2.0.0",
+          "2.0.0rc1",
+          "2.0.0rc2",
+          "2.0.0rc3",
+          "2.0.0rc4",
+          "2.0.0rc5",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.1.0",
+          "2.1.1",
+          "2.1.2",
+          "2.2.0",
+          "2.2.0a1",
+          "2.2.1",
+          "2.2.2"
+        ],
+        "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2023/02/GHSA-xg9f-g7g7-2323/GHSA-xg9f-g7g7-2323.json"
+        }
+      }
+    ],
+    "references": [
+      "https://github.com/pallets/werkzeug/security/advisories/GHSA-xg9f-g7g7-2323",
+      "https://nvd.nist.gov/vuln/detail/CVE-2023-25577",
+      "https://github.com/pallets/werkzeug/commit/517cac5a804e8c4dc4ed038bb20dacd038e7a9f1",
+      "https://github.com/pallets/werkzeug",
+      "https://github.com/pallets/werkzeug/releases/tag/2.2.3",
+      "https://github.com/pypa/advisory-database/tree/main/vulns/werkzeug/PYSEC-2023-58.yaml",
+      "https://security.netapp.com/advisory/ntap-20230818-0003",
+      "https://www.debian.org/security/2023/dsa-5470"
+    ],
+    "published": "2023-02-15T15:36:26Z",
+    "modified": "2026-02-04T03:57:31.773504Z",
+    "content_hash": "0ee9d3dff35d22ab214942e2c88356e3893ef1dbdb16e4d74f1402a1f069629d"
+  },
+  {
+    "id": "osv:PYSEC-2022-203",
+    "source": "osv",
+    "source_id": "PYSEC-2022-203",
+    "aliases": [
+      "CVE-2022-29361"
+    ],
+    "summary": "",
+    "details": "** DISPUTED ** Improper parsing of HTTP requests in Pallets Werkzeug v2.1.0 and below allows attackers to perform HTTP Request Smuggling using a crafted HTTP request with multiple requests included inside the body. NOTE: the vendor's position is that this behavior can only occur in unsupported configurations involving development mode and an HTTP server from outside the Werkzeug project.",
+    "severity": {
+      "cvss_vector": null,
+      "cvss_score": null,
+      "bucket": null
+    },
+    "cwe_ids": [],
+    "affected": [
+      {
+        "ecosystem": "PyPI",
+        "name": "werkzeug",
+        "ranges": [
+          {
+            "type": "GIT",
+            "events": [
+              {
+                "introduced": "0",
+                "fixed": null,
+                "last_affected": null
+              },
+              {
+                "introduced": null,
+                "fixed": "9a3a981d70d2e9ec3344b5192f86fcaf3210cd85",
+                "last_affected": null
+              }
+            ]
+          },
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0",
+                "fixed": null,
+                "last_affected": null
+              },
+              {
+                "introduced": null,
+                "fixed": "2.1.1",
+                "last_affected": null
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.1",
+          "0.10",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.10.4",
+          "0.11",
+          "0.11.1",
+          "0.11.10",
+          "0.11.11",
+          "0.11.12",
+          "0.11.13",
+          "0.11.14",
+          "0.11.15",
+          "0.11.2",
+          "0.11.3",
+          "0.11.4",
+          "0.11.5",
+          "0.11.6",
+          "0.11.7",
+          "0.11.8",
+          "0.11.9",
+          "0.12",
+          "0.12.1",
+          "0.12.2",
+          "0.13",
+          "0.14",
+          "0.14.1",
+          "0.15.0",
+          "0.15.1",
+          "0.15.2",
+          "0.15.3",
+          "0.15.4",
+          "0.15.5",
+          "0.15.6",
+          "0.16.0",
+          "0.16.1",
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4",
+          "0.4.1",
+          "0.5",
+          "0.5.1",
+          "0.6",
+          "0.6.1",
+          "0.6.2",
+          "0.7",
+          "0.7.1",
+          "0.7.2",
+          "0.8",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.9",
+          "0.9.1",
+          "0.9.2",
+          "0.9.3",
+          "0.9.4",
+          "0.9.5",
+          "0.9.6",
+          "1.0.0",
+          "1.0.0rc1",
+          "1.0.1",
+          "2.0.0",
+          "2.0.0rc1",
+          "2.0.0rc2",
+          "2.0.0rc3",
+          "2.0.0rc4",
+          "2.0.0rc5",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.1.0"
+        ],
+        "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/werkzeug/PYSEC-2022-203.yaml"
+        }
+      }
+    ],
+    "references": [
+      "https://github.com/pallets/werkzeug/commit/9a3a981d70d2e9ec3344b5192f86fcaf3210cd85",
+      "https://github.com/pallets/werkzeug/issues/2420"
+    ],
+    "published": "2022-05-25T01:15:00Z",
+    "modified": "2023-11-08T04:09:13.275498Z",
+    "content_hash": "9470b438a206504eb3c32ad025d7f273fd4b6daefbe0b133dc75166eb9bd8f11"
+  },
+  {
+    "id": "osv:PYSEC-2023-221",
+    "source": "osv",
+    "source_id": "PYSEC-2023-221",
+    "aliases": [
+      "CVE-2023-46136",
+      "GHSA-hrfv-mqp8-q5rw"
+    ],
+    "summary": "",
+    "details": "Werkzeug is a comprehensive WSGI web application library. If an upload of a file that starts with CR or LF and then is followed by megabytes of data without these characters: all of these bytes are appended chunk by chunk into internal bytearray and lookup for boundary is performed on growing buffer. This allows an attacker to cause a denial of service by sending crafted multipart data to an endpoint that will parse it. The amount of CPU time required can block worker processes from handling legitimate requests. This vulnerability has been patched in version 3.0.1.",
+    "severity": {
+      "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+      "cvss_score": null,
+      "bucket": null
+    },
+    "cwe_ids": [],
+    "affected": [
+      {
+        "ecosystem": "PyPI",
+        "name": "werkzeug",
+        "ranges": [
+          {
+            "type": "GIT",
+            "events": [
+              {
+                "introduced": "0",
+                "fixed": null,
+                "last_affected": null
+              },
+              {
+                "introduced": null,
+                "fixed": "f3c803b3ade485a45f12b6d6617595350c0f03e2",
+                "last_affected": null
+              },
+              {
+                "introduced": null,
+                "fixed": "f2300208d5e2a5076cbbb4c2aad71096fd040ef9",
+                "last_affected": null
+              }
+            ]
+          },
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0",
+                "fixed": null,
+                "last_affected": null
+              },
+              {
+                "introduced": null,
+                "fixed": "2.3.8",
+                "last_affected": null
+              },
+              {
+                "introduced": "3.0.0",
+                "fixed": null,
+                "last_affected": null
+              },
+              {
+                "introduced": null,
+                "fixed": "3.0.1",
+                "last_affected": null
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.1",
+          "0.10",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.10.4",
+          "0.11",
+          "0.11.1",
+          "0.11.10",
+          "0.11.11",
+          "0.11.12",
+          "0.11.13",
+          "0.11.14",
+          "0.11.15",
+          "0.11.2",
+          "0.11.3",
+          "0.11.4",
+          "0.11.5",
+          "0.11.6",
+          "0.11.7",
+          "0.11.8",
+          "0.11.9",
+          "0.12",
+          "0.12.1",
+          "0.12.2",
+          "0.13",
+          "0.14",
+          "0.14.1",
+          "0.15.0",
+          "0.15.1",
+          "0.15.2",
+          "0.15.3",
+          "0.15.4",
+          "0.15.5",
+          "0.15.6",
+          "0.16.0",
+          "0.16.1",
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4",
+          "0.4.1",
+          "0.5",
+          "0.5.1",
+          "0.6",
+          "0.6.1",
+          "0.6.2",
+          "0.7",
+          "0.7.1",
+          "0.7.2",
+          "0.8",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.9",
+          "0.9.1",
+          "0.9.2",
+          "0.9.3",
+          "0.9.4",
+          "0.9.5",
+          "0.9.6",
+          "1.0.0",
+          "1.0.0rc1",
+          "1.0.1",
+          "2.0.0",
+          "2.0.0rc1",
+          "2.0.0rc2",
+          "2.0.0rc3",
+          "2.0.0rc4",
+          "2.0.0rc5",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.1.0",
+          "2.1.1",
+          "2.1.2",
+          "2.2.0",
+          "2.2.0a1",
+          "2.2.1",
+          "2.2.2",
+          "2.2.3",
+          "2.3.0",
+          "2.3.1",
+          "2.3.2",
+          "2.3.3",
+          "2.3.4",
+          "2.3.5",
+          "2.3.6",
+          "2.3.7",
+          "3.0.0"
+        ],
+        "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/werkzeug/PYSEC-2023-221.yaml"
+        }
+      }
+    ],
+    "references": [
+      "https://github.com/pallets/werkzeug/commit/f3c803b3ade485a45f12b6d6617595350c0f03e2",
+      "https://github.com/pallets/werkzeug/security/advisories/GHSA-hrfv-mqp8-q5rw"
+    ],
+    "published": "2023-10-25T18:17:00Z",
+    "modified": "2023-11-08T18:38:34.170214Z",
+    "content_hash": "58b265c8027dcd1b1b151df670eae50b693046f09bc991422db2054593eb3b73"
+  },
+  {
+    "id": "osv:PYSEC-2023-57",
+    "source": "osv",
+    "source_id": "PYSEC-2023-57",
+    "aliases": [
+      "CVE-2023-23934",
+      "GHSA-px8h-6qxv-m22q"
+    ],
+    "summary": "",
+    "details": "Werkzeug is a comprehensive WSGI web application library. Browsers may allow \"nameless\" cookies that look like `=value` instead of `key=value`. A vulnerable browser may allow a compromised application on an adjacent subdomain to exploit this to set a cookie like `=__Host-test=bad` for another subdomain. Werkzeug prior to 2.2.3 will parse the cookie `=__Host-test=bad` as __Host-test=bad`. If a Werkzeug application is running next to a vulnerable or malicious subdomain which sets such a cookie using a vulnerable browser, the Werkzeug application will see the bad cookie value but the valid cookie key. The issue is fixed in Werkzeug 2.2.3.",
+    "severity": {
+      "cvss_vector": null,
+      "cvss_score": null,
+      "bucket": null
+    },
+    "cwe_ids": [],
+    "affected": [
+      {
+        "ecosystem": "PyPI",
+        "name": "werkzeug",
+        "ranges": [
+          {
+            "type": "GIT",
+            "events": [
+              {
+                "introduced": "0",
+                "fixed": null,
+                "last_affected": null
+              },
+              {
+                "introduced": null,
+                "fixed": "cf275f42acad1b5950c50ffe8ef58fe62cdce028",
+                "last_affected": null
+              }
+            ]
+          },
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0",
+                "fixed": null,
+                "last_affected": null
+              },
+              {
+                "introduced": null,
+                "fixed": "2.2.3",
+                "last_affected": null
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.1",
+          "0.10",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.10.4",
+          "0.11",
+          "0.11.1",
+          "0.11.10",
+          "0.11.11",
+          "0.11.12",
+          "0.11.13",
+          "0.11.14",
+          "0.11.15",
+          "0.11.2",
+          "0.11.3",
+          "0.11.4",
+          "0.11.5",
+          "0.11.6",
+          "0.11.7",
+          "0.11.8",
+          "0.11.9",
+          "0.12",
+          "0.12.1",
+          "0.12.2",
+          "0.13",
+          "0.14",
+          "0.14.1",
+          "0.15.0",
+          "0.15.1",
+          "0.15.2",
+          "0.15.3",
+          "0.15.4",
+          "0.15.5",
+          "0.15.6",
+          "0.16.0",
+          "0.16.1",
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4",
+          "0.4.1",
+          "0.5",
+          "0.5.1",
+          "0.6",
+          "0.6.1",
+          "0.6.2",
+          "0.7",
+          "0.7.1",
+          "0.7.2",
+          "0.8",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.9",
+          "0.9.1",
+          "0.9.2",
+          "0.9.3",
+          "0.9.4",
+          "0.9.5",
+          "0.9.6",
+          "1.0.0",
+          "1.0.0rc1",
+          "1.0.1",
+          "2.0.0",
+          "2.0.0rc1",
+          "2.0.0rc2",
+          "2.0.0rc3",
+          "2.0.0rc4",
+          "2.0.0rc5",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.1.0",
+          "2.1.1",
+          "2.1.2",
+          "2.2.0",
+          "2.2.0a1",
+          "2.2.1",
+          "2.2.2"
+        ],
+        "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/werkzeug/PYSEC-2023-57.yaml"
+        }
+      }
+    ],
+    "references": [
+      "https://github.com/pallets/werkzeug/security/advisories/GHSA-px8h-6qxv-m22q",
+      "https://github.com/pallets/werkzeug/commit/cf275f42acad1b5950c50ffe8ef58fe62cdce028",
+      "https://github.com/pallets/werkzeug/releases/tag/2.2.3"
+    ],
+    "published": "2023-02-14T20:15:00Z",
+    "modified": "2023-11-08T04:11:43.091670Z",
+    "content_hash": "6113e7d62068e8017bed865ef1b48f240037cf0df70a2864a98468356ea57c57"
+  },
+  {
+    "id": "osv:PYSEC-2023-58",
+    "source": "osv",
+    "source_id": "PYSEC-2023-58",
+    "aliases": [
+      "CVE-2023-25577",
+      "GHSA-xg9f-g7g7-2323"
+    ],
+    "summary": "",
+    "details": "Werkzeug is a comprehensive WSGI web application library. Prior to version 2.2.3, Werkzeug's multipart form data parser will parse an unlimited number of parts, including file parts. Parts can be a small amount of bytes, but each requires CPU time to parse and may use more memory as Python data. If a request can be made to an endpoint that accesses `request.data`, `request.form`, `request.files`, or `request.get_data(parse_form_data=False)`, it can cause unexpectedly high resource usage. This allows an attacker to cause a denial of service by sending crafted multipart data to an endpoint that will parse it. The amount of CPU time required can block worker processes from handling legitimate requests. The amount of RAM required can trigger an out of memory kill of the process. Unlimited file parts can use up memory and file handles. If many concurrent requests are sent continuously, this can exhaust or kill all available workers. Version 2.2.3 contains a patch for this issue.",
+    "severity": {
+      "cvss_vector": null,
+      "cvss_score": null,
+      "bucket": null
+    },
+    "cwe_ids": [],
+    "affected": [
+      {
+        "ecosystem": "PyPI",
+        "name": "werkzeug",
+        "ranges": [
+          {
+            "type": "GIT",
+            "events": [
+              {
+                "introduced": "0",
+                "fixed": null,
+                "last_affected": null
+              },
+              {
+                "introduced": null,
+                "fixed": "517cac5a804e8c4dc4ed038bb20dacd038e7a9f1",
+                "last_affected": null
+              }
+            ]
+          },
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0",
+                "fixed": null,
+                "last_affected": null
+              },
+              {
+                "introduced": null,
+                "fixed": "2.2.3",
+                "last_affected": null
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.1",
+          "0.10",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.10.4",
+          "0.11",
+          "0.11.1",
+          "0.11.10",
+          "0.11.11",
+          "0.11.12",
+          "0.11.13",
+          "0.11.14",
+          "0.11.15",
+          "0.11.2",
+          "0.11.3",
+          "0.11.4",
+          "0.11.5",
+          "0.11.6",
+          "0.11.7",
+          "0.11.8",
+          "0.11.9",
+          "0.12",
+          "0.12.1",
+          "0.12.2",
+          "0.13",
+          "0.14",
+          "0.14.1",
+          "0.15.0",
+          "0.15.1",
+          "0.15.2",
+          "0.15.3",
+          "0.15.4",
+          "0.15.5",
+          "0.15.6",
+          "0.16.0",
+          "0.16.1",
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4",
+          "0.4.1",
+          "0.5",
+          "0.5.1",
+          "0.6",
+          "0.6.1",
+          "0.6.2",
+          "0.7",
+          "0.7.1",
+          "0.7.2",
+          "0.8",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.9",
+          "0.9.1",
+          "0.9.2",
+          "0.9.3",
+          "0.9.4",
+          "0.9.5",
+          "0.9.6",
+          "1.0.0",
+          "1.0.0rc1",
+          "1.0.1",
+          "2.0.0",
+          "2.0.0rc1",
+          "2.0.0rc2",
+          "2.0.0rc3",
+          "2.0.0rc4",
+          "2.0.0rc5",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.1.0",
+          "2.1.1",
+          "2.1.2",
+          "2.2.0",
+          "2.2.0a1",
+          "2.2.1",
+          "2.2.2"
+        ],
+        "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/werkzeug/PYSEC-2023-58.yaml"
+        }
+      }
+    ],
+    "references": [
+      "https://github.com/pallets/werkzeug/commit/517cac5a804e8c4dc4ed038bb20dacd038e7a9f1",
+      "https://github.com/pallets/werkzeug/releases/tag/2.2.3",
+      "https://github.com/pallets/werkzeug/security/advisories/GHSA-xg9f-g7g7-2323"
+    ],
+    "published": "2023-02-14T20:15:00Z",
+    "modified": "2023-11-08T04:11:52.539843Z",
+    "content_hash": "e1d4f6610ffeb30f189fe58fd2c0c82ff70e91eeae7602570d086b0b595af91f"
+  }
+]
