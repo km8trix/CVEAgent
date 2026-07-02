@@ -125,6 +125,7 @@ def test_graph_end_to_end_matches_and_verifies() -> None:
     assert [f.dependency.name for f in report.findings] == ["jinja2"]
     assert report.stats["candidates"] == 1
     assert report.stats["dropped_by_verifier"] == 0
+    assert report.latency_ms is not None and report.latency_ms >= 0  # telemetry stamped
 
     f = report.findings[0]
     assert f.verdict is not None and f.verdict.passed

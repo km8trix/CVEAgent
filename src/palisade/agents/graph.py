@@ -14,6 +14,7 @@ and evals confirm parity. See IMPLEMENTATION_PLAN.md sections 4.4 and 6.
 
 import asyncio
 import logging
+import time
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any, cast
@@ -210,6 +211,7 @@ async def run_graph(
     configured, deterministic otherwise). Pass `drafter=None` to force the deterministic path,
     or a Drafter to inject one (tests).
     """
+    start = time.monotonic()
     resolved: Drafter | None = make_drafter(get_settings()) if drafter is _AUTO else drafter
     owns = osv is None
     osv = osv or OsvClient()
@@ -227,7 +229,9 @@ async def run_graph(
             "lockfile": lockfile,
         }
         final = await graph.ainvoke(initial)
-        return cast(ScanReport, final["report"])
+        report = cast(ScanReport, final["report"])
+        report.latency_ms = int((time.monotonic() - start) * 1000)
+        return report
     finally:
         if owns:
             await osv.aclose()
