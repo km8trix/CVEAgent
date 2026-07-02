@@ -20,14 +20,19 @@ _PARSERS: dict[str, LockfileParser] = {
 }
 
 
-def load_lockfile(path: str) -> Lockfile:
-    """Build a Lockfile from a filesystem path, inferring kind from the basename."""
-    name = Path(path).name
-    kind = _KIND_BY_FILENAME.get(name)
+def lockfile_from_content(filename: str, content: str) -> Lockfile:
+    """Build a Lockfile from in-memory content, inferring kind from the basename."""
+    kind = _KIND_BY_FILENAME.get(Path(filename).name)
     if kind is None:
-        raise ValueError(f"unsupported lockfile: {name}")
-    raw = Path(path).read_text(encoding="utf-8")
-    return Lockfile(path=path, kind=kind, raw=raw)  # type: ignore[arg-type]
+        raise ValueError(f"unsupported lockfile: {Path(filename).name}")
+    return Lockfile(path=filename, kind=kind, raw=content)  # type: ignore[arg-type]
+
+
+def load_lockfile(path: str) -> Lockfile:
+    """Read a lockfile from disk. Validates the kind before reading."""
+    if Path(path).name not in _KIND_BY_FILENAME:
+        raise ValueError(f"unsupported lockfile: {Path(path).name}")
+    return lockfile_from_content(path, Path(path).read_text(encoding="utf-8"))
 
 
 def parse_lockfile(lockfile: Lockfile) -> list[Dependency]:
