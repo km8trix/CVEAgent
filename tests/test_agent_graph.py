@@ -234,6 +234,59 @@ def test_build_remediation_no_fix_above_installed_becomes_mitigate() -> None:
     assert rem.upgrade_to is None
 
 
+def test_verify_passes_multi_affected_package_advisory() -> None:
+    # Advisory lists the package twice; only the SECOND range contains the installed version.
+    # The Verifier must check every same-named entry (mirrors the matcher), not just the first.
+    adv = AdvisoryRecord(
+        id="osv:multi",
+        source="osv",
+        source_id="GHSA-multi",
+        summary="",
+        details="",
+        severity=Severity(bucket="high"),
+        affected=[
+            AffectedPackage(
+                ecosystem="PyPI",
+                name="werkzeug",
+                ranges=[
+                    Range(
+                        type="ECOSYSTEM", events=[Event(introduced="1.0.0"), Event(fixed="1.9.9")]
+                    )
+                ],
+            ),
+            AffectedPackage(
+                ecosystem="PyPI",
+                name="werkzeug",
+                ranges=[
+                    Range(
+                        type="ECOSYSTEM", events=[Event(introduced="2.0.0"), Event(fixed="2.0.3")]
+                    )
+                ],
+            ),
+        ],
+        references=["https://example.test/adv"],
+        published=datetime(2024, 1, 1),
+        modified=datetime(2024, 1, 1),
+        content_hash="h",
+    )
+    f = Finding(
+        dependency=Dependency(
+            ecosystem="PyPI", name="werkzeug", version="2.0.0", direct=True, source_file="req"
+        ),
+        advisory_id="osv:multi",
+        matched_range=adv.affected[1].ranges[0],
+        installed_version="2.0.0",
+        fixed_versions=["2.0.3"],
+        is_affected=True,
+        citations=["https://example.test/adv"],
+    )
+    enrich_findings([f], {}, {})
+    f.remediation = build_remediation(f)
+    verdict = verify_finding(f, adv)
+    assert verdict.passed
+    assert verdict.version_in_range
+
+
 # --- reject loop ---
 
 
