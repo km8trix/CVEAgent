@@ -16,7 +16,7 @@ def _cves(finding: Finding) -> list[str]:
     return [a.upper() for a in finding.aliases if a.upper().startswith("CVE-")]
 
 
-def _rank(finding: Finding) -> float:
+def compute_rank(finding: Finding) -> float:
     # Tiers: KEV (1000) dominates any non-KEV finding; within a tier, EPSS (0-100) then the
     # severity bucket (0-4) then a direct-dep tiebreak (0.5). kev_date_added is deliberately
     # NOT part of the rank — within KEV, higher exploit probability sorts first.
@@ -46,4 +46,4 @@ def enrich_findings(
         if kev_dates:
             finding.kev_listed = True
             finding.kev_date_added = min(kev_dates)
-        finding.rank_score = _rank(finding)
+        finding.rank_score = compute_rank(finding)

@@ -9,6 +9,8 @@ is conservative on purpose: the project's thesis is false-positive reduction.
 """
 
 import logging
+from collections.abc import Iterable
+from functools import cmp_to_key
 
 from packaging.version import InvalidVersion
 from packaging.version import Version as PypiVersion
@@ -100,3 +102,24 @@ def matching_range(ecosystem: str, version: str, affected: AffectedPackage) -> R
         if rng.type in _VERSION_RANGE_TYPES and _events_match(ecosystem, version, rng.events):
             return rng
     return None
+
+
+def smallest_above(ecosystem: str, version: str, candidates: Iterable[str]) -> str | None:
+    """Lowest candidate strictly greater than `version` by ecosystem version order, or None.
+
+    Grounds an upgrade target in the same parsed-version logic as matching — never a lexical
+    sort (which would rank 10.0.1 below 9.0.1, or a prerelease below its release).
+    """
+    above = [c for c in candidates if _gt(ecosystem, c, version)]
+    if not above:
+        return None
+
+    def _cmp(a: str, b: str) -> int:
+        return _compare(ecosystem, a, b) or 0  # both parseable here (passed _gt above)
+
+    return min(above, key=cmp_to_key(_cmp))
+
+
+def smallest_fixed_above(ecosystem: str, version: str, rng: Range) -> str | None:
+    """Lowest `fixed` boundary in `rng` greater than `version` — the minimal safe upgrade target."""
+    return smallest_above(ecosystem, version, [e.fixed for e in rng.events if e.fixed])

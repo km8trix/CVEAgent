@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from palisade.matching.matcher import match
-from palisade.matching.version import is_version_affected, matching_range
+from palisade.matching.version import is_version_affected, matching_range, smallest_above
 from palisade.models.advisory import (
     AdvisoryRecord,
     AffectedPackage,
@@ -11,6 +11,13 @@ from palisade.models.advisory import (
     Severity,
 )
 from palisade.models.dependency import Dependency
+
+
+def test_smallest_above_uses_version_order_not_lexical() -> None:
+    assert smallest_above("PyPI", "8.0.0", ["10.0.1", "9.0.1"]) == "9.0.1"  # not lexical 10.0.1
+    assert smallest_above("PyPI", "3.5.0", ["2.0.0"]) is None  # no fix above installed
+    assert smallest_above("npm", "1.0.0", ["1.2.0", "1.10.0"]) == "1.2.0"
+    assert smallest_above("npm", "1.0.0", ["1.0.0-beta"]) is None  # prerelease is not above
 
 
 def _range(*pairs: tuple[str, str]) -> Range:
