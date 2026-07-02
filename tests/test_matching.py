@@ -187,3 +187,14 @@ def test_git_range_is_ignored() -> None:
 def test_unparseable_fixed_boundary_skips_range() -> None:
     ap = _affected("PyPI", "x", ranges=[_range(("introduced", "0"), ("fixed", "not-a-version"))])
     assert is_version_affected("PyPI", "1.0", ap) is False  # unreliable range -> conservative
+
+
+def test_matcher_populates_aliases() -> None:
+    adv = _adv(
+        "osv:1",
+        [_affected("PyPI", "jinja2", ranges=[_range(("introduced", "0"), ("fixed", "3.1.3"))])],
+    )
+    adv = adv.model_copy(update={"aliases": ["CVE-2024-22195"], "source_id": "GHSA-x"})
+    findings = match([_dep("PyPI", "jinja2", "3.1.2")], [adv])
+    assert "CVE-2024-22195" in findings[0].aliases
+    assert "GHSA-x" in findings[0].aliases  # source_id included in the union

@@ -22,6 +22,7 @@ def _make_finding(dep: Dependency, adv: AdvisoryRecord, pkg: AffectedPackage) ->
     return Finding(
         dependency=dep,
         advisory_id=adv.id,
+        aliases=sorted(set(adv.aliases) | {adv.source_id}),
         matched_range=matching_range(dep.ecosystem, dep.version, pkg),
         installed_version=dep.version,
         fixed_versions=fixed,

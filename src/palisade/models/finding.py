@@ -30,6 +30,7 @@ class VerifierVerdict(BaseModel):
 class Finding(BaseModel):
     dependency: Dependency
     advisory_id: str
+    aliases: list[str] = Field(default_factory=list)
     matched_range: Range | None = None
     installed_version: str
     fixed_versions: list[str] = Field(default_factory=list)
