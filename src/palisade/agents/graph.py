@@ -12,6 +12,8 @@ The M1 `scanner.scan()` path stays the default; this graph is opt-in until the L
 and evals confirm parity. See IMPLEMENTATION_PLAN.md sections 4.4 and 6.
 """
 
+import asyncio
+import logging
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any, cast
@@ -19,8 +21,10 @@ from uuid import uuid4
 
 from langgraph.graph import END, START, StateGraph
 
+from palisade.agents.llm import Drafter, llm_remediation, make_drafter
 from palisade.agents.nodes import build_remediation, verify_finding
 from palisade.clients.osv import OsvClient
+from palisade.config import get_settings
 from palisade.enrichment.enrich import enrich_findings
 from palisade.matching.matcher import match
 from palisade.models.dependency import DependencyGraph, Lockfile
@@ -38,6 +42,12 @@ from palisade.scanner import (
     _Kev,
 )
 
+logger = logging.getLogger(__name__)
+
+# Sentinel: run_graph(drafter=_AUTO) builds a drafter from settings; drafter=None forces the
+# deterministic path. ponytail: typed Any to avoid a three-member union on the public signature.
+_AUTO: Any = object()
+
 
 @dataclass
 class GraphDeps:
@@ -47,6 +57,7 @@ class GraphDeps:
     epss: _Epss
     kev: _Kev
     max_retries: int = 1
+    drafter: Drafter | None = None  # None -> deterministic remediation (no LLM)
 
 
 def build_graph(deps: GraphDeps) -> Any:  # ponytail: CompiledStateGraph generics churn; Any here.
@@ -91,8 +102,22 @@ def build_graph(deps: GraphDeps) -> Any:  # ponytail: CompiledStateGraph generic
 
     async def remediate(state: ScanState) -> dict[str, Any]:
         findings = state.get("impacted", [])
-        for f in findings:
-            f.remediation = build_remediation(f)
+        advisories = state.get("advisories", {})
+
+        async def _remediate_one(f: Finding) -> None:
+            adv = advisories.get(f.advisory_id)
+            if deps.drafter is None or adv is None:
+                f.remediation = build_remediation(f)
+                return
+            try:
+                f.remediation = await llm_remediation(f, adv, deps.drafter)
+            except Exception as exc:  # never let an LLM hiccup break the scan — degrade cleanly
+                logger.warning(
+                    "LLM remediation failed for %s; using deterministic: %s", f.advisory_id, exc
+                )
+                f.remediation = build_remediation(f)
+
+        await asyncio.gather(*(_remediate_one(f) for f in findings))
         return {
             "impacted": findings,
             "trace": state["trace"] + [{"node": "remediate", "remediated": len(findings)}],
@@ -177,8 +202,15 @@ async def run_graph(
     epss: _Epss | None = None,
     kev: _Kev | None = None,
     max_retries: int = 1,
+    drafter: Any = _AUTO,
 ) -> ScanReport:
-    """Run the agent graph over a lockfile. Dependency injection mirrors `scanner.scan()`."""
+    """Run the agent graph over a lockfile. Dependency injection mirrors `scanner.scan()`.
+
+    `drafter` defaults to a drafter built from settings (LLM remediation when an API key is
+    configured, deterministic otherwise). Pass `drafter=None` to force the deterministic path,
+    or a Drafter to inject one (tests).
+    """
+    resolved: Drafter | None = make_drafter(get_settings()) if drafter is _AUTO else drafter
     owns = osv is None
     osv = osv or OsvClient()
     try:
@@ -186,7 +218,9 @@ async def run_graph(
             cached_epss, cached_kev = await _cached_feeds()
             epss = epss if epss is not None else cached_epss
             kev = kev if kev is not None else cached_kev
-        graph = build_graph(GraphDeps(osv=osv, epss=epss, kev=kev, max_retries=max_retries))
+        graph = build_graph(
+            GraphDeps(osv=osv, epss=epss, kev=kev, max_retries=max_retries, drafter=resolved)
+        )
         initial: ScanState = {
             "scan_id": str(uuid4()),
             "target": lockfile.path,
