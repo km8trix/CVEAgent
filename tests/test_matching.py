@@ -198,3 +198,17 @@ def test_matcher_populates_aliases() -> None:
     findings = match([_dep("PyPI", "jinja2", "3.1.2")], [adv])
     assert "CVE-2024-22195" in findings[0].aliases
     assert "GHSA-x" in findings[0].aliases  # source_id included in the union
+
+
+def test_fixed_versions_excludes_git_sha() -> None:
+    ap = AffectedPackage(
+        ecosystem="PyPI",
+        name="werkzeug",
+        ranges=[
+            _range(("introduced", "0"), ("fixed", "2.1.1")),
+            Range(type="GIT", events=[Event(introduced="0"), Event(fixed="9a3a981ddeadbeef")]),
+        ],
+    )
+    adv = _adv("osv:1", [ap])
+    findings = match([_dep("PyPI", "werkzeug", "2.0.0")], [adv])
+    assert findings[0].fixed_versions == ["2.1.1"]  # no commit sha

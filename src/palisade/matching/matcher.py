@@ -6,7 +6,7 @@ The LLM never decides affectedness; this is a pure semver/PEP-440 check.
 from collections import defaultdict
 from collections.abc import Iterable
 
-from palisade.matching.version import is_version_affected, matching_range
+from palisade.matching.version import _VERSION_RANGE_TYPES, is_version_affected, matching_range
 from palisade.models.advisory import AdvisoryRecord, AffectedPackage
 from palisade.models.dependency import Dependency
 from palisade.models.finding import Finding
@@ -18,7 +18,9 @@ def _name_key(ecosystem: str, name: str) -> tuple[str, str]:
 
 
 def _make_finding(dep: Dependency, adv: AdvisoryRecord, pkg: AffectedPackage) -> Finding:
-    fixed = sorted({e.fixed for r in pkg.ranges for e in r.events if e.fixed})
+    fixed = sorted(
+        {e.fixed for r in pkg.ranges if r.type in _VERSION_RANGE_TYPES for e in r.events if e.fixed}
+    )
     return Finding(
         dependency=dep,
         advisory_id=adv.id,
