@@ -6,6 +6,7 @@ from typing import Any, Literal
 from pydantic import BaseModel, Field
 
 Ecosystem = Literal["npm", "PyPI"]
+SeverityBucket = Literal["low", "medium", "high", "critical"]
 
 
 class Event(BaseModel):
@@ -30,7 +31,7 @@ class AffectedPackage(BaseModel):
 class Severity(BaseModel):
     cvss_vector: str | None = None
     cvss_score: float | None = None
-    bucket: Literal["low", "medium", "high", "critical"] | None = None
+    bucket: SeverityBucket | None = None
 
 
 class AdvisoryRecord(BaseModel):
