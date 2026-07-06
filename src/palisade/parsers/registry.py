@@ -13,6 +13,9 @@ _KIND_BY_FILENAME: dict[str, str] = {
     "poetry.lock": "poetry-lock",
 }
 
+# Public: basenames we can scan (used to filter a PR's changed files).
+LOCKFILE_FILENAMES = frozenset(_KIND_BY_FILENAME)
+
 _PARSERS: dict[str, LockfileParser] = {
     "package-lock": parse_package_lock,
     "requirements": parse_requirements,

@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     # External API auth (optional; needed by ingestion/scan in later PRs).
     nvd_api_key: SecretStr | None = None
     github_token: SecretStr | None = None
+    github_webhook_secret: SecretStr | None = None  # HMAC secret for the PR-scan webhook (M3)
     anthropic_api_key: SecretStr | None = None
 
     # Model routing (see IMPLEMENTATION_PLAN.md section 6).
