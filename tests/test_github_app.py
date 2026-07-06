@@ -6,6 +6,8 @@ from datetime import UTC, datetime
 from typing import Any
 
 import httpx
+import pytest
+from pydantic import SecretStr
 
 from palisade.config import Settings
 from palisade.github_app.render import MARKER, render_comment
@@ -242,7 +244,9 @@ def test_webhook_route_503_without_secret() -> None:
     assert resp.status_code == 503
 
 
-def test_webhook_route_rejects_bad_signature_and_schedules_valid() -> None:
+def test_webhook_route_rejects_bad_signature_and_schedules_valid(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     from fastapi.testclient import TestClient
 
     import palisade.github_app.webhook as wh
@@ -250,28 +254,29 @@ def test_webhook_route_rejects_bad_signature_and_schedules_valid() -> None:
 
     secret = "topsecret"
     scheduled: list[dict[str, Any]] = []
-    orig_settings, orig_handle = wh.get_settings, wh.handle_pull_request
-    wh.get_settings = lambda: Settings(github_webhook_secret=secret)  # type: ignore[assignment]
-    wh.handle_pull_request = lambda payload, **kw: scheduled.append(payload)  # type: ignore[assignment]
-    try:
-        client = TestClient(app)
-        body = (
-            b'{"action":"opened","repository":{"full_name":"o/r"},'
-            b'"pull_request":{"number":1,"head":{"sha":"s"}}}'
-        )
-        sig = "sha256=" + hmac.new(secret.encode(), body, hashlib.sha256).hexdigest()
-        pr = {"X-GitHub-Event": "pull_request"}
 
-        bad = client.post(
-            "/github/webhook", content=body, headers={**pr, "X-Hub-Signature-256": "sha256=nope"}
-        )
-        assert bad.status_code == 401
-        assert not scheduled  # rejected before scheduling
+    async def fake_handle(payload: dict[str, Any], **kwargs: Any) -> None:
+        scheduled.append(payload)
 
-        ok = client.post(
-            "/github/webhook", content=body, headers={**pr, "X-Hub-Signature-256": sig}
-        )
-        assert ok.status_code == 202 and ok.json() == {"msg": "scan scheduled"}
-        assert len(scheduled) == 1 and scheduled[0]["repository"]["full_name"] == "o/r"
-    finally:
-        wh.get_settings, wh.handle_pull_request = orig_settings, orig_handle
+    monkeypatch.setattr(
+        wh, "get_settings", lambda: Settings(github_webhook_secret=SecretStr(secret))
+    )
+    monkeypatch.setattr(wh, "handle_pull_request", fake_handle)
+
+    client = TestClient(app)
+    body = (
+        b'{"action":"opened","repository":{"full_name":"o/r"},'
+        b'"pull_request":{"number":1,"head":{"sha":"s"}}}'
+    )
+    sig = "sha256=" + hmac.new(secret.encode(), body, hashlib.sha256).hexdigest()
+    pr = {"X-GitHub-Event": "pull_request"}
+
+    bad = client.post(
+        "/github/webhook", content=body, headers={**pr, "X-Hub-Signature-256": "sha256=nope"}
+    )
+    assert bad.status_code == 401
+    assert not scheduled  # rejected before scheduling
+
+    ok = client.post("/github/webhook", content=body, headers={**pr, "X-Hub-Signature-256": sig})
+    assert ok.status_code == 202 and ok.json() == {"msg": "scan scheduled"}
+    assert len(scheduled) == 1 and scheduled[0]["repository"]["full_name"] == "o/r"
