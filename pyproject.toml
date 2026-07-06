@@ -27,6 +27,9 @@ dev = [
     "ruff>=0.8",
     "mypy>=1.13",
 ]
+dashboard = [
+    "streamlit>=1.38",
+]
 
 [project.scripts]
 palisade = "palisade.cli:main"
