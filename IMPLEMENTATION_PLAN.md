@@ -84,7 +84,7 @@ Tasks:
 - [x] Async scan queue (pg-backed worker) so scans don't block the API.
 - [ ] Langfuse tracing; cost + p95 latency captured per scan; prompt versioning.
 - [x] CI eval-regression gate (`.github/workflows/eval-gate.yml`) on PRs touching prompts/retrieval/matching.
-- [ ] GitHub App / webhook PR-scan mode → posts a comment with the ranked cited report.
+- [x] GitHub App / webhook PR-scan mode → posts a comment with the ranked cited report.
 - [ ] Dashboard (Streamlit first — lazy; Next.js only if time) showing findings + metrics.
 - [ ] Ragas faithfulness/context-precision in the eval suite; enforce faithfulness ≥ 0.9 in the gate.
 - [ ] Write-up ("How I stopped my security agent from crying wolf") + 2-min demo + architecture diagram.
