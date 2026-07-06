@@ -1,4 +1,4 @@
-.PHONY: install run worker up up-db down migrate test lint fmt
+.PHONY: install run worker dashboard up up-db down migrate test lint fmt
 
 install:
 	uv sync --extra dev
@@ -8,6 +8,9 @@ run:
 
 worker:
 	uv run python -m palisade.worker
+
+dashboard:
+	uv run --extra dashboard streamlit run dashboard/app.py
 
 up:
 	docker compose up -d
