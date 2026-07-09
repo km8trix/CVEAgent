@@ -23,6 +23,28 @@ logger = logging.getLogger(__name__)
 
 _STRONG_TASKS = {"remediate", "impact"}
 
+# Bump when the remediation system prompt (_SYSTEM) changes so traces/evals can pin the prompt.
+PROMPT_VERSION = "2026-07-remediate-v1"
+
+# ponytail: Anthropic list price (USD per 1M tokens, input/output) as of 2026-07; update on
+# repricing. Unknown model -> $0 (logged) so a model swap can't silently misreport cost.
+_PRICES: dict[str, tuple[float, float]] = {
+    "claude-opus-4-8": (5.0, 25.0),
+    "claude-haiku-4-5": (1.0, 5.0),
+    "claude-haiku-4-5-20251001": (1.0, 5.0),
+}
+
+
+def _cost_usd(model: str, input_tokens: int, output_tokens: int) -> float:
+    """Token cost for one call. ponytail: no cache-token accounting — drafts are single-shot
+    and uncached; add cache_read/write terms if the drafter starts caching."""
+    price = _PRICES.get(model)
+    if price is None:
+        logger.warning("no price for model %s; recording $0 cost", model)
+        return 0.0
+    in_price, out_price = price
+    return input_tokens / 1_000_000 * in_price + output_tokens / 1_000_000 * out_price
+
 
 class RemediationDraft(BaseModel):
     """Structured-output schema the LLM must fill. Prose only — the version target is fixed."""
@@ -34,6 +56,8 @@ class RemediationDraft(BaseModel):
 
 
 class Drafter(Protocol):
+    cost_usd: float  # cumulative LLM spend across this drafter's calls (0.0 for a fresh drafter)
+
     async def draft(
         self, finding: Finding, adv: AdvisoryRecord, upgrade_to: str | None
     ) -> RemediationDraft: ...
@@ -56,6 +80,7 @@ class AnthropicDrafter:
     def __init__(self, client: AsyncAnthropic, model: str) -> None:
         self._client = client
         self._model = model
+        self.cost_usd = 0.0
 
     async def draft(
         self, finding: Finding, adv: AdvisoryRecord, upgrade_to: str | None
@@ -75,6 +100,10 @@ class AnthropicDrafter:
             system=_SYSTEM,
             messages=[{"role": "user", "content": prompt}],
             output_format=RemediationDraft,
+        )
+        # Tokens are billed even on a refusal/unparseable reply — account before the None check.
+        self.cost_usd += _cost_usd(
+            self._model, message.usage.input_tokens, message.usage.output_tokens
         )
         if message.parsed_output is None:  # refusal / unparseable -> let the caller fall back
             raise ValueError("LLM returned no parseable remediation draft")

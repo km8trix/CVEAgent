@@ -22,7 +22,7 @@ from uuid import uuid4
 
 from langgraph.graph import END, START, StateGraph
 
-from palisade.agents.llm import Drafter, llm_remediation, make_drafter
+from palisade.agents.llm import PROMPT_VERSION, Drafter, llm_remediation, make_drafter
 from palisade.agents.nodes import build_remediation, verify_finding
 from palisade.clients.osv import OsvClient
 from palisade.config import get_settings
@@ -31,6 +31,7 @@ from palisade.matching.matcher import match
 from palisade.models.dependency import DependencyGraph, Lockfile
 from palisade.models.finding import Finding, ScanReport
 from palisade.models.state import ScanState
+from palisade.observability.tracing import Tracer, make_tracer
 from palisade.parsers.registry import load_lockfile, lockfile_from_content, parse_lockfile
 
 # Reuse the M1 scanner internals so the graph is a thin orchestration, not a second pipeline.
@@ -204,15 +205,18 @@ async def run_graph(
     kev: _Kev | None = None,
     max_retries: int = 1,
     drafter: Any = _AUTO,
+    tracer: Any = _AUTO,
 ) -> ScanReport:
     """Run the agent graph over a lockfile. Dependency injection mirrors `scanner.scan()`.
 
     `drafter` defaults to a drafter built from settings (LLM remediation when an API key is
     configured, deterministic otherwise). Pass `drafter=None` to force the deterministic path,
-    or a Drafter to inject one (tests).
+    or a Drafter to inject one (tests). `tracer` defaults to a Langfuse tracer built from
+    settings (no-op without keys); pass `tracer=None` to disable, or inject one (tests).
     """
     start = time.monotonic()
     resolved: Drafter | None = make_drafter(get_settings()) if drafter is _AUTO else drafter
+    resolved_tracer: Tracer | None = make_tracer(get_settings()) if tracer is _AUTO else tracer
     owns = osv is None
     osv = osv or OsvClient()
     try:
@@ -231,6 +235,15 @@ async def run_graph(
         final = await graph.ainvoke(initial)
         report = cast(ScanReport, final["report"])
         report.latency_ms = int((time.monotonic() - start) * 1000)
+        # Only the LLM path costs money; the deterministic path leaves cost_usd None (not $0).
+        report.cost_usd = resolved.cost_usd if resolved is not None else None
+        if resolved_tracer is not None:
+            try:
+                resolved_tracer.record_scan(
+                    report, final.get("trace", []), prompt_version=PROMPT_VERSION
+                )
+            except Exception as exc:  # tracing must never break a scan
+                logger.warning("scan tracing failed: %s", exc)
         return report
     finally:
         if owns:
