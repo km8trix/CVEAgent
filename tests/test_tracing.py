@@ -26,6 +26,7 @@ from palisade.models.advisory import (
 )
 from palisade.models.dependency import Dependency
 from palisade.models.finding import Finding, ScanReport
+from palisade.observability import tracing
 from palisade.observability.tracing import make_tracer
 
 _JINJA2_OSV: dict[str, Any] = {
@@ -262,6 +263,41 @@ def test_make_tracer_none_when_client_construction_fails() -> None:
         assert make_tracer(settings) is None
     finally:
         restore()
+
+
+# --- get_tracer: cache one client for the worker's lifetime, close it on exit ---
+
+
+def test_get_tracer_caches_one_client_and_closes(monkeypatch: Any) -> None:
+    # The worker calls get_tracer() once per scan in an infinite loop; it must build the Langfuse
+    # client ONCE (not leak a new one — with its own export threads — per scan), and close() must
+    # shut that single client down cleanly on worker exit.
+    constructed: list[Any] = []
+    fake = types.ModuleType("langfuse")
+
+    class _FakeLangfuse:
+        def __init__(self, **kwargs: Any) -> None:
+            self.did_shutdown = False
+            constructed.append(self)
+
+        def shutdown(self) -> None:
+            self.did_shutdown = True
+
+    fake.Langfuse = _FakeLangfuse  # type: ignore[attr-defined]
+    restore_mod = _with_langfuse_module(fake)
+    keyed = Settings(langfuse_public_key="pk", langfuse_secret_key=SecretStr("sk"))
+    monkeypatch.setattr(tracing, "get_settings", lambda: keyed)
+    tracing.get_tracer.cache_clear()
+    try:
+        first = tracing.get_tracer()
+        second = tracing.get_tracer()  # a second "scan" reuses the cached tracer
+        assert first is not None and first is second
+        assert len(constructed) == 1  # one Langfuse client across scans, not one per call
+        first.close()
+        assert constructed[0].did_shutdown  # worker exit flushes + stops export threads
+    finally:
+        tracing.get_tracer.cache_clear()
+        restore_mod()
 
 
 # --- run_graph wiring: cost stamped, trace exported, broken tracer tolerated ---

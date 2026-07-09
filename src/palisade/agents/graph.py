@@ -31,7 +31,7 @@ from palisade.matching.matcher import match
 from palisade.models.dependency import DependencyGraph, Lockfile
 from palisade.models.finding import Finding, ScanReport
 from palisade.models.state import ScanState
-from palisade.observability.tracing import Tracer, make_tracer
+from palisade.observability.tracing import Tracer, get_tracer
 from palisade.parsers.registry import load_lockfile, lockfile_from_content, parse_lockfile
 
 # Reuse the M1 scanner internals so the graph is a thin orchestration, not a second pipeline.
@@ -216,7 +216,7 @@ async def run_graph(
     """
     start = time.monotonic()
     resolved: Drafter | None = make_drafter(get_settings()) if drafter is _AUTO else drafter
-    resolved_tracer: Tracer | None = make_tracer(get_settings()) if tracer is _AUTO else tracer
+    resolved_tracer: Tracer | None = get_tracer() if tracer is _AUTO else tracer
     owns = osv is None
     osv = osv or OsvClient()
     try:
