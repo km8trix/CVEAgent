@@ -30,6 +30,10 @@ dev = [
 dashboard = [
     "streamlit>=1.38",
 ]
+observability = [
+    # ponytail: broad pin; tracing calls are wrapped so a Langfuse SDK API shift can't break a scan.
+    "langfuse>=2,<4",
+]
 
 [project.scripts]
 palisade = "palisade.cli:main"
@@ -59,5 +63,5 @@ testpaths = ["tests"]
 pythonpath = ["."]
 
 [[tool.mypy.overrides]]
-module = ["pgvector.*"]
+module = ["pgvector.*", "langfuse.*"]
 ignore_missing_imports = true

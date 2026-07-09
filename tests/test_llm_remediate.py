@@ -67,6 +67,7 @@ class _FakeDrafter:
     def __init__(self, citations: list[str]) -> None:
         self._citations = citations
         self.seen_upgrade: str | None = None
+        self.cost_usd = 0.0
 
     async def draft(
         self, finding: Finding, adv: AdvisoryRecord, upgrade_to: str | None
@@ -81,6 +82,8 @@ class _FakeDrafter:
 
 
 class _RaisingDrafter:
+    cost_usd = 0.0
+
     async def draft(
         self, finding: Finding, adv: AdvisoryRecord, upgrade_to: str | None
     ) -> RemediationDraft:
@@ -89,6 +92,8 @@ class _RaisingDrafter:
 
 class _UngroundedDrafter:
     """Returns prose that never names the fix version (the hallucination the guard catches)."""
+
+    cost_usd = 0.0
 
     async def draft(
         self, finding: Finding, adv: AdvisoryRecord, upgrade_to: str | None
