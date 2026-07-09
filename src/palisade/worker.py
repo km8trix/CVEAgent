@@ -26,6 +26,7 @@ from palisade import queue
 from palisade.agents.graph import run_graph_content
 from palisade.config import get_settings
 from palisade.db.base import SessionLocal
+from palisade.observability.tracing import get_tracer
 from palisade.scanner import scan_content
 
 logger = logging.getLogger(__name__)
@@ -61,11 +62,21 @@ def main() -> None:
     if reclaimed:
         logger.info("reclaimed %d stale running scan(s)", reclaimed)
     logger.info("worker started; polling every %ss", settings.worker_poll_interval)
-    while True:
-        with SessionLocal() as session:
-            worked = process_once(session)
-        if not worked:
-            time.sleep(settings.worker_poll_interval)
+    try:
+        while True:
+            with SessionLocal() as session:
+                worked = process_once(session)
+            if not worked:
+                time.sleep(settings.worker_poll_interval)
+    finally:
+        # Close the process-wide cached tracer on exit (flush buffered traces, stop its export
+        # threads). Only if a scan actually built it — currsize stays 0 if get_tracer() was
+        # never called, so shutting down before the first scan doesn't construct a client just
+        # to destroy it. None here means Langfuse is off.
+        if get_tracer.cache_info().currsize:
+            tracer = get_tracer()
+            if tracer is not None:
+                tracer.close()
 
 
 if __name__ == "__main__":
